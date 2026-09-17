@@ -7,7 +7,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>八方雲集{{ empty(env('APP_ENV_HEAD')) ? '': '-' . env('APP_ENV_HEAD')}}</title>
+		<title>TV Menu-{{ empty(env('APP_ENV_HEAD')) ? '': '-' . env('APP_ENV_HEAD')}}</title>
 		
 		<link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}">
 		
@@ -30,33 +30,13 @@
 		<script src="{{ HelperLib::versionAsset('scripts/util.js') }}" defer></script>
 		<script src="{{ HelperLib::versionAsset('scripts/helper.js') }}" defer></script>
 		<script src="{{ HelperLib::versionAsset('scripts/app.js') }}" defer></script>
-		<script src="{{ HelperLib::versionAsset('scripts/profile.js') }}" defer></script>
 		@stack('scripts')
 		@vite(['resources/js/app.js'])
 	</head>
 
 	<body x-cloak>
-		<div x-data x-cloak x-show="$store.app.isLoading" class="loading-bar">
-			<progress class="pink-text"></progress>
-		</div>
-		
-		@if(AppManager::hasAuth())
-			<x-menu :menus="AppManager::getAuthMenu()" :currentPath="request()->url()"/>
-		@endif
-		
-		<main x-data="{hasAuth: @js(AppManager::hasAuth())}" :class="hasAuth ? 'app':'signin'" class="responsive"> <!--@scroll.capture.window="isTop = $event.target.scrollTop <= 10"-->
-			@if(AppManager::hasAuth())
-				<x-action-bar :initData="$viewModel->actionBarData()" />
-			@endif
-			
+		<main class="responsive">
 			@yield('content')
 		</main>
-		
-		@if(AppManager::hasAuth())
-			<x-profile/>
-		@endif
-		
-		<x-dialog />
-		<x-toast :msg="$viewModel->msg()"/>
 	</body>
 </html>
