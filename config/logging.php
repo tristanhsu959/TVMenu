@@ -52,37 +52,31 @@ return [
 
     'channels' => [
 		
-		/* User Define */
-		'appServiceLog' => [
+		/********** User Define **********/
+		#後端呼叫記錄用
+		'apiServerLog' => [
 			'driver' => 'daily',
-			'days' => 15,
+			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
-			'path' => storage_path('logs/service.log'),
+			'path' => storage_path('logs/apiServer.log'),
 		],
-		'webSysLog' => [
+		#TV呼叫記錄用
+		'apiClientLog' => [
 			'driver' => 'daily',
-			'days' => 15,
+			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
-			'path' => storage_path('logs/webSys.log'),
+			'path' => storage_path('logs/apiClient.log'),
 		],
 		'commandLog' => [
 			'driver' => 'daily',
-			'days' => 15,
+			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
 			'path' => storage_path('logs/command.log'),
 		],
-		// 'webDBLog' => [
-			// 'driver' => 'daily',
-			// 'days' => 15,
-			// #'channels' => ['daily'],
-			// 'ignore_exceptions' => false,
-			// 'path' => storage_path('logs/webDB.log'),
-		// ],
-		
-		/* User Define End */
+		/********** User Define End **********/
 		
 		
         'stack' => [
