@@ -1,0 +1,133 @@
+/* Aside Menu */
+.aside.menu {
+	--menu-bg: #2f3135;
+	
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: 256px;
+	height: 100vh;
+	background-color: var(--menu-bg);
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	
+	.logo {
+		height: 64px;
+		display: flex;
+		justify-content: center;
+		/* padding: 2rem 1rem;  */
+		border-bottom: 2px solid rgba(0 0 0 / .20);
+			
+		.logo-wrapper {
+			width: 100%;
+			height: 100%;
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			/* border-radius: 4rem; */
+			background: linear-gradient(to right bottom, #cb1a19, #cb1a19, #d94a14, #e46d14);
+			
+			img {
+				width: auto;
+				height: 48px;
+			}
+		}
+	}
+		
+	.container-fluid {
+		/*#00bcd4*/
+		--menu-color: rgba(0, 188, 212, .87); 
+		--menu-group-color: rgba(0, 188, 212, 1);  
+		--menu-hover-color: #80deea; /*200*/
+		
+		width: 100%;
+		/* height: calc(100vh - 64px); 若設定要考慮logo padding */
+		padding-left: 0;
+		padding-right: 0;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: var(--menu-group-color) var(--menu-bg); 
+		/* Two valid colors. The first applies to the thumb of the scrollbar, the second to the track. */
+		
+	
+		.menu-group {
+			&:first-child {
+				margin-top: 1rem;
+			}
+			
+			a.list-title {
+				position: relative;
+				display: flex;
+				align-items: center;
+				padding: .5rem 1rem;
+				text-decoration: none;
+				/* color: var(--menu-group-color); */
+				
+				.material-symbols-outlined {
+					margin-right: .5rem;
+				}
+				
+				&:hover /*, &.active, &[aria-expanded='true']*/ {
+					/* color: var(--menu-hover-color); */
+					filter: brightness(150%);
+					cursor: pointer;
+				}
+				
+				&[aria-expanded='false']:after {
+					position: absolute;
+					right: 1rem;
+					content: "\e315";
+					font-family: 'Material Symbols Outlined';
+				}
+				&[aria-expanded='true']:after {
+					position: absolute;
+					right: 1rem;
+					content: "\e313";
+					font-family: 'Material Symbols Outlined';
+				}
+			}
+			
+			ul.list-group {
+				color: #607d8b;
+				
+				li.list-group-item {
+					display: flex;
+					border-width: 0px;
+					padding: 0 1rem 0 2rem;
+					background-color: transparent;
+					margin-bottom: .25rem;
+					
+					a {
+						flex: 1;
+						padding: 0 1rem;
+						text-decoration: none;
+						color: var(--menu-color);
+						font-size: .875rem;
+						line-height: 40px;
+						
+						&:hover, &.active {
+							border-radius: 20px;
+							background-color: #455a64;
+							color: var(--menu-hover-color);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Menu color define */
+.material-symbols-outlined, .menu-group a.list-title { /* accetn-1 */
+	&.purple {
+		color: #ea80fc;
+	}
+	&.red {
+		color: #ff8a80;
+	}
+	&.teal {
+		color: #a7ffeb;
+	}
+}

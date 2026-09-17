@@ -1,0 +1,41 @@
+/* Product list */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+.store-list {
+	.info {
+		margin-right: .5rem;
+		font-weight: bold;
+		background-color: #263238;
+		color: #ce93d8;
+	}
+	
+	.statistics-store {
+		max-height: calc(100vh - 230px);
+		overflow-y: auto;
+		
+		table.stripes tbody tr:nth-child(odd) {
+			background-color: #d7ccc8; 
+		}
+		
+		table {
+			thead tr th {
+				position: sticky;
+				top: 0;
+				z-index: 5;
+				word-break: keep-all;
+				background-color: var(--background);
+			}
+						
+			thead tr th:last-child, tbody tr td:last-child {
+				text-align: right;
+				padding-right: 1rem;
+			}
+			
+			tbody tr:hover {
+				color: red;
+			}
+		}
+	}
+}

@@ -1,0 +1,42 @@
+/* Product list */
+
+.setting-list {
+	.tabs a {
+		font-size: 1.2rem; 
+	}
+	
+	ul.list li {
+		display: flex;
+		align-items: center;
+		
+		i.extra {
+			--_size: 2.5rem;
+		}
+		
+		.brand-label {
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			width: 40px;
+			height: 40px;
+			border-radius: .75rem;
+			
+			&.bf {
+				background-color: #ffc107;
+				color: #212121;
+			}
+			&.bg {
+				background-color: #b71c1c;
+				color: #fafafa;
+			}
+		}
+		
+		h6 {
+			line-height: 40px;
+		}
+		
+		&:hover {
+			background-color: #fce4ec;
+		}
+	}
+}

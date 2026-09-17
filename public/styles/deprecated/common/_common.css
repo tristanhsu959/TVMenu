@@ -1,0 +1,101 @@
+/* Signin & App common style */
+
+body {
+	/* Toast Message */
+	.toast.msg {
+		position: absolute;
+		right: 25%;
+		bottom: 2rem;
+		background-color: #E00020;
+		color: #fafafa;
+	}
+
+	/* .error-msg {
+		display: flex;
+		align-items: center;
+		border-radius: 2px;
+		
+		.material-symbols-outlined {
+			margin-right: .5rem; 
+		}
+	} */
+
+	/* Depth box-shadow */
+	.dp-1 {
+		box-shadow:  0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+		0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+		0px 2px 1px -1px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-2 {
+		box-shadow:  0px 1px 5px 0px rgba(0, 0, 0, 0.2),
+		0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+		0px 3px 1px -2px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-3 {
+		box-shadow:0px 1px 8px 0px rgba(0, 0, 0, 0.2),
+		0px 3px 4px 0px rgba(0, 0, 0, 0.14),
+		0px 3px 3px -2px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-4 {
+		box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+		0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+		0px 1px 10px 0px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-5 {
+		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+		0px 5px 8px 0px rgba(0, 0, 0, 0.14),
+		0px 1px 14px 0px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-6 {
+		box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+		0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+		0px 1px 18px 0px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-7 {
+		box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.2),
+		0px 7px 10px 1px rgba(0, 0, 0, 0.14),
+		0px 2px 16px 1px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-8 {
+		box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
+		0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+		0px 3px 14px 2px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-16 {
+		box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.2),
+		0px 16px 24px 2px rgba(0, 0, 0, 0.14),
+		0px 6px 30px 5px rgba(0, 0, 0, 0.12); 
+	}
+	.dp-24 {
+		box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
+		0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+		0px 9px 46px 8px rgba(0, 0, 0, 0.12); 
+	}
+	
+	
+}
+
+/* Theme Base Color Define */
+/*
+primary 500 200 700
+secondary A200 A100 A400
+Error cf6679 dark E00020 light
+
+
+Surface 8dp		12%
+Nav	模式底板/模式側板	16dp	8%
+Appbar 	4dp		9%
+card	1-8dp	5~12%
+FAB		6dp		11%
+Button	2-8dp	7~12%
+Dialog	24dp 	16%
+
+Hover	4%
+Focus	12% color 100%
+
+color alpha	#000 dark/light
+primary		87% / 100%
+secondary 	54% / 70%
+hint		26% / 30% or disabled
+divider 	12% / 12%
+*/

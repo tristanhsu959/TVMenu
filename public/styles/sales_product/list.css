@@ -1,0 +1,17 @@
+/* Product list */
+
+.setting-list {
+	.tabs a {
+		font-size: 1.2rem; 
+	}
+	
+	ul.list li {
+		i.extra {
+			--_size: 2.5rem;
+		}
+		
+		&:hover {
+			background-color: #f3e5f5;
+		}
+	}
+}

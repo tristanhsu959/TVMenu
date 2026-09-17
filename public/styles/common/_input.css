@@ -1,0 +1,134 @@
+/* Input Field Style */
+
+
+/* Input field color setting */
+/* Define */ 
+.field-purple {
+	--primary: #7b1fa2;		/* 邊框與 Label 聚焦時的顏色 */
+	--outline: #7b1fa2;		/* 未聚焦時的邊框顏色 */
+	--on-surface: #333333;  /* 文字顏色 */
+	--surface: #f3e5f5;     /* 下拉清單的背景顏色 */
+}
+.field-light-blue {
+	--primary: #03a9f4;
+	--outline: #03a9f4;
+	--on-surface: #333333;  
+	--surface: #e1f5fe;
+}
+.field-dark-blue {
+	--primary: #01579b;
+	--outline: #01579b;
+	--on-surface: #333333;  
+	--surface: #e3f2fd;
+}
+.field-cyan {
+	--primary: #00838f;
+	--outline: #00838f;
+	--on-surface: #333333;  
+	--surface: #e0f7fa;
+}
+.field-teal {
+	--primary: #009688;
+	--outline: #009688;
+	--on-surface: #333333;  
+	--surface: #e0f2f1;
+}
+.field-red {
+	--primary: #f44336;
+	--outline: #f44336;
+	--on-surface: #333333;  
+	--surface: #ffebee;
+}
+.field-light-green {
+	--primary: #689f38;
+	--outline: #689f38;
+	--on-surface: #333333;  
+	--surface: #f1f8e9;
+}
+.field-orange {
+	--primary: #f57c00;
+	--outline: #f57c00;
+	--on-surface: #333333;  
+	--surface: #fff3e0;
+}
+/* Others */
+
+/* dark bg */
+.filter {
+	.field-filter-dark {
+		--primary: #f8bbd0;
+		--outline: #f8bbd0;
+		--surface: #f8bbd0;
+		--on-surface: #f8bbd0;  
+		--on-surface-variant: #f8bbd0; 
+		
+		input {
+			color: #fafafa;
+		}
+		select {
+			color: #fafafa;
+			option {
+				color: #333333;
+			}
+		}
+		
+		&:has(input:placeholder-shown) label {
+			color: var(--primary);
+		}
+		i{
+			color: var(--primary);
+		}
+	}
+	
+	button {
+		background-color: #f48fb1;
+	}
+}
+
+/* Define End */
+
+.field {
+	
+	&:has(input:not(:placeholder-shown)) label,
+	&:has(textarea:not(:placeholder-shown)) label,
+	&:has(select:not(:invalid)) label {
+		color: var(--primary);
+	}
+}
+
+.fieldset {
+	border-color: var(--primary);
+	
+	legend {
+		font-size: 14px !important;
+		color: var(--primary);
+	}
+}
+
+.switch {
+	i.output { 
+		color: var(--primary); 
+		inline-size: 3rem;
+		font-size: 1.25rem;
+	}
+}
+
+.checkbox {
+	&.check-red {
+		--primary: #f44336; 
+		--on-primary: #ffffff;
+	}
+	&.check-amber {
+		--primary: #ff9800; 
+		--on-primary: #ffffff;
+	}
+	&.check-pink {
+		--primary: #e91e63; 
+		--on-primary: #ffffff;
+	}
+	&.check-blue {
+		--primary: #0d47a1; 
+		--on-primary: #ffffff;
+	}
+}
+

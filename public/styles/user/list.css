@@ -1,0 +1,18 @@
+/* User list */
+
+.user-list {
+	table tbody {
+		tr td .tooltip.area {
+			width: max-content !important;
+			max-width: none !important;
+			
+			.chip {
+				margin-right: .5rem;
+				
+				&:last-child {
+					margin-right: 0;
+				}
+			}
+		}
+	}
+}

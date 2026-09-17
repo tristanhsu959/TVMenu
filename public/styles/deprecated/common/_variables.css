@@ -1,0 +1,41 @@
+/* Variables Define */
+
+:root {
+	
+	--primary:#b02f00;
+	--on-primary:#ffffff;
+	--primary-container:#ffdbd1;
+	--on-primary-container:#3b0900;
+	--secondary:#77574e;
+	--on-secondary:#ffffff;
+	--secondary-container:#ffdbd1;
+	--on-secondary-container:#2c150f;
+	--tertiary:#6c5d2f;
+	--on-tertiary:#ffffff;
+	--tertiary-container:#f5e1a7;
+	--on-tertiary-container:#231b00;
+	--error:#ba1a1a;
+	--on-error:#ffffff;
+	--error-container:#ffdad6;
+	--on-error-container:#410002;
+	--background:#fffbff;
+	--on-background:#201a18;
+	--surface:#fff8f6;
+	--on-surface:#201a18;
+	--surface-variant:#f5ded8;
+	--on-surface-variant:#53433f;
+	--outline:#85736e;
+	--outline-variant:#d8c2bc;
+	--shadow:#000000;
+	--scrim:#000000;
+	--inverse-surface:#362f2d;
+	--inverse-on-surface:#fbeeeb;
+	--inverse-primary:#ffb5a0;
+	--surface-dim:#e4d7d4;
+	--surface-bright:#fff8f6;
+	--surface-container-lowest:#ffffff;
+	--surface-container-low:#fef1ed;
+	--surface-container:#f8ebe8;
+	--surface-container-high:#f3e5e2;
+	--surface-container-highest:#ede0dc;
+}

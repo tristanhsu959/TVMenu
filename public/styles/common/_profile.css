@@ -1,0 +1,79 @@
+/* User Profile */
+
+#profile {
+	.dialog-body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 0 0 1rem;
+		
+		.info-head {
+			width: 100%;
+			min-height: 168px;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+			background-color: #0277bd;
+			border-radius: 0;
+			padding: 1rem;
+			
+			i.fill {
+				--_size: 4rem;
+				color: hsl(8, 70%, 56%);
+			}
+			
+			p {
+				margin: 0;
+				font-size: .875rem;
+				color: #f3e5f5;
+				
+				&.name {
+					font-size: 1.2rem;
+					color: #fff;
+				}
+			}
+			
+			.profile-edit {
+				position: absolute;
+				right: 1rem;
+				bottom: 1rem;
+			}
+		}
+		/* Info list */
+		.info-body {
+			width: 100%;
+			padding-top: 1rem;
+			
+			div p {
+				display: flex;
+				justify-content: space-between;
+				margin-block-end: 1rem;
+				
+				button span {
+					font-size: .75rem;
+				}
+			}
+			
+			.auth-area {
+				display: flex;
+				justify-content: flex-start;
+				
+				.chip {
+					min-width: 80px;
+					padding: 0;
+				}
+			}
+		}
+	}
+	
+	a.btn-logout {
+		position: absolute;
+		bottom: 1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: hsl(8, 100%, 56%);
+		color: #fff;
+	}
+}

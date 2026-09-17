@@ -1,0 +1,81 @@
+/* New Release Style */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+form {
+	margin-block-start: 0;
+}
+
+#searchPanel {
+	.fieldset {
+		.row:first-of-type {
+				margin-block-start: 0;
+		}
+	}
+}
+
+/* Data */
+.store-content {
+	
+	/* 門市 */
+	.statistics-store {
+		&.bafang {
+			--table-bg: #e1bee7; 			/* light-2 */
+			--table-bg-dark: #ba68c8; 		/* dark-2 */
+			--table-fixed-bg: #b3e5fc; 		/* light-4 */
+			--table-fixed-color: #01579b;	/* dark-4 */
+			--table-stripes: #f3e5f5;		/* light-5 */
+		}
+		
+		position: relatvie;
+		width: auto;
+		max-height: calc(100vh - 128px - 2rem); 
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: var(--table-bg-dark) var(--surface); /*thumb - track*/
+		margin: 0;
+		padding: 0;
+		
+		table {
+			table-layout: fixed;
+			min-width: 100%;
+			width: max-content;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			border-radius: 4px;
+			
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+			
+			thead {
+				tr {
+					th {
+						word-break: keep-all;
+						background-color: var(--table-bg);
+						width: 120px;
+						color: rgba(0, 0, 0, .87);
+						border-block-end: 0;
+					}
+				}
+				
+				tr:fist-child {
+					th:nth-of-type(4) {
+						width: 200px;
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					td {
+						color: #424242;
+					}
+				}
+			}
+		}
+	}
+}
+

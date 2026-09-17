@@ -1,0 +1,347 @@
+/* New Release Style */
+body {
+	--theme-surface-bg : var(--theme-surface-l1); /* default */
+	--tab-color: rgba(2, 136, 209, .87);
+}
+
+.content-wrapper {
+	
+	/* height: 100vh; */
+	
+	.searchbar {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding: 1rem;
+		margin-bottom: 1rem;
+		border-radius: .5rem;
+		background: var(--theme-surface-bg);
+		box-sizing: border-box;
+		
+		.field {
+			margin-right: 1rem;
+		}
+		.btn {
+			margin-right: .5rem;
+		}
+		
+		.sales-info {
+			position: absolute;
+			right: 1rem;
+			color: #f8bbd0;
+			
+		}
+	}
+	
+	.nav-tab {
+		position: absolute;
+		left: 50%;
+		bottom: .5rem;
+		transform: translateX(-50%);
+		justify-content: center;
+		background-color: rgba(255, 255, 255, .87);
+		z-index: 20;
+		display: flex;
+		border-radius: 2rem;
+		padding: .1rem;
+		border: 4px solid var(--tab-color);
+		
+		.nav-link {
+			background-color: transparent;
+			border-radius: 2rem;
+			border: 2px solid transparent;
+			color: var(--tab-color);
+			
+			&.active {
+				border: 2px solid rgba(255, 255, 255, .7);
+				background-color: var(--tab-color);
+				color: rgba(255, 255, 255, .87);
+			}
+		}
+	}
+}
+
+/* Data */
+.tab-content {
+	/* height: calc(100% - 2rem); */
+	background-color: transparent;
+	padding: 0;
+	/* margin: 0 1rem 80px; */
+	
+	.tab-pane {
+		padding: 1rem;
+		border-radius: .5rem;
+		background-color: var(--theme-surface-bg);
+		box-sizing: border-box;
+		/* background-color: rgba(255, 255, 255, .87); */
+		/* box-shadow: 1px 1px 4px 2px rgba(255, 255, 255, 0.75); */
+		
+		&#area {
+			background-color: #01579B;
+		}
+		&#shop {
+			background-color: #aed581;
+		}
+	}
+	
+	/* 區域彙總 */
+	.statistics-area.section-wrapper {
+		padding: 0;
+		margin: 0;
+		/* border: 1px solid rgba(0, 0, 0, .12); */
+		/* background-color: rgba(1, 87, 155, .87); */
+		
+		&.empty {
+			color: #ffcdd2;
+		}
+		
+		.row {
+			margin: 0;
+			
+			&:first-child .col {
+				background-color: rgba(1, 87, 155, 1);
+				color: rgba(255, 255, 255, .87);
+				font-weight: bold;
+				padding-top: 0;
+			}
+			
+			&:last-child .col {
+				border-top: 1px dashed rgba(0, 0, 0, .12);
+				color: #f44336;
+			}
+			
+			.col {
+				padding: .5rem;
+				background-color: #e1f5fe;
+			}
+		}
+	}
+	
+	/* 門市 */
+	.statistics-shop.section-wrapper {
+		position: relatvie;
+		width: auto;
+		max-height: calc(100vh - 64px - 5.5rem - 46px - 1.5rem);
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: #33691e #aed581; /*thumb - track*/
+		margin: 0;
+		
+		&.empty {
+			color: #b71c1c;
+		}
+		
+		table {
+			--bs-table-striped-bg : #f1f8e9;
+			
+			table-layout: fixed;
+			min-width: 100%;
+			width: auto;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			/* border: 1px solid var(--theme-divider-color); */
+			
+			thead {
+				tr {
+					th {
+						position: sticky;
+						top: 0;
+						z-index: 5;
+						word-break: keep-all;
+						background-color: #aed581;
+						min-width: 80px;
+						color: rgba(0, 0, 0, .87);
+						padding-top: 0;
+						
+						&.col-date span {
+							display: inline-flex;
+							flex-direction: column;
+							justify-content: center;
+							/* padding: 0 .5rem; */
+							
+							&:first-child {
+								/* font-size: .9rem; */
+								background-color: #e91e63;
+								border-radius: 4px;
+								color: rgba(255, 255, 255, .87);
+								font-weight: 400;
+								padding: 0 .25rem;
+							}
+						}
+						
+						&:nth-child(1) {
+							min-width: 100px;
+							position: sticky;
+							left: 0;
+							z-index: 6;
+						}
+						&:nth-child(2) {
+							min-width: 100px;
+							position: sticky;
+							left: 100px;
+							z-index: 6;
+						}
+						&:nth-child(3) {
+							min-width: 200px;
+							position: sticky;
+							left: 200px;
+							z-index: 6;
+						}
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					th {
+						position: sticky;
+						font-weight: normal;
+						z-index: 5;
+						color: #1b5e20; /*#1b3823;*/
+						/* border-bottom-width: 0; */
+						
+						&:nth-child(1) {
+							left: 0;
+						}
+						&:nth-child(2) {
+							left: 100px;
+						}
+						&:nth-child(3) {
+							left: 200px;
+						}
+					}
+					
+					td {
+						color: #424242;
+						/* 總計 */
+						&:nth-last-child(-n + 2) {
+							color: #f44336;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+
+	/* Top10 | Last10 */
+	.statistics-ranking.section-wrapper {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		padding: 0;
+		max-height: calc(100vh - 64px - 5.5rem - 46px - 1.5rem);
+		border-radius: .375rem;
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: #f4511e var(--theme-surface-l1); /*thumb - track*/
+		margin: 0;
+		
+		&.empty {
+			color: #ffcdd2;
+		}
+		
+		/*共用Style*/
+		.card {
+			flex: 1;
+			/* box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.3); */
+			
+			&:first-child {
+				margin-right: .75rem;
+			}
+			&:last-child {
+				margin-left: .75rem;
+			}
+			
+			.card-body {
+				.card-title {
+					font-size: 1.125rem;
+				}
+				
+				/* ranking list */
+				ul li.list-group-item {
+					/* height: 80px; */
+					box-sizing: border-box;
+					box-sizing: content-box;
+					position: relatvie;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					.ranking {
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: 64px;
+						height: 82px;
+						background-color: transparent;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size: 2rem;
+						font-family: 'Orbitron';
+						color: #fff;
+						
+						&:after {
+							position: absolute;
+							top: 0;
+							right: -30px;
+							content: '';
+							border-top: 41px solid transparent;
+							border-left: 30px solid transparent;
+							border-bottom: 41px solid transparent;
+						}
+					}
+					
+					.info {
+						margin-left: calc(60px + 44px);
+						margin-right: auto;
+						color: #455a64;
+						font-size: .875rem;
+						
+						.name {
+							color: #000;
+							font-size: 1rem;
+							font-weight: 500;
+						}
+					}
+				}
+			}
+			
+			/* tag color */
+			&.ranking-top .card-body {
+				.card-title {
+					color: #ff5722;
+				}
+				
+				ul li.list-group-item {
+					.ranking {
+						background-color: #ff5722;
+						
+						&:after {
+							border-left-color: #ff5722;
+						}
+					}
+					.badge {
+						background-color: #f4511e;
+					}
+				}
+			}
+			
+			&.ranking-last .card-body ul li.list-group-item {
+				.ranking {
+					background-color: #37474f;
+					
+					&:after {
+						border-left-color: #37474f;
+					}
+				}
+				.badge {
+					background-color: #546e7a;
+				}
+			}
+		}
+	}
+}

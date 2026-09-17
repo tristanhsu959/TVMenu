@@ -1,0 +1,130 @@
+/* Navbar */
+.page.navbar {
+	--nav-bg-color: var(--theme-bg);
+	
+	position: sticky;
+	top: 0;
+	z-index: 9;
+	width: 100%;
+	height: 64px;
+	
+	/* Default */
+	color: var(--theme-primary-color);
+	/* padding-left: 1rem;
+	padding-right: 1rem; */
+	background-color: var(--nav-bg-color);
+	margin-bottom: .5rem;
+	
+	.navbar-home {
+		display: flex;
+		font-size: 1.5rem;
+		font-family: 'Orbitron';
+		
+		.sales {
+			/* text-shadow: 1px 1px #ff3b1e, -1px -1px #ff3b1e, 1px -1px #ff3b1e, -1px 1px #ff3b1e;
+			 */
+			color: #ff3b1e;
+			font-weight: bold;
+		}
+		.dashboard {
+			text-shadow: 1px 1px #ff3b1e, -1px -1px #ff3b1e, 1px -1px #ff3b1e, -1px 1px #ff3b1e;
+			color: #121212;
+		}
+	}
+	.navbar-head {
+		display: flex;
+		align-items: center;
+		font-weight: 500;
+		color: #ffe0b2; /* var(--theme-primary-color); */
+		
+		&> .material-symbols-outlined {
+			color: rgba(255, 255, 255, .38);
+		}
+		/* New release info */
+		.new-release-info {
+			display: flex;
+			flex-direction: column;
+			margin-left: 1rem;
+			font-size: .85rem;
+			color: #ff80ab;
+		}
+	}
+	
+	/* 共用的style */
+	.navbar-action, .navbar-head {
+		--btn-color: rgba(255, 255, 255, .7);
+		--btn-hover-color: rgba(255, 255, 255, 1);
+		
+		display: flex;
+		font-weight: 500;
+		
+		a.btn {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 2rem;
+			height: 2rem;
+			border-radius: 1.25rem;
+			transition: width 0.3s ease-in-out 0.3s;
+			overflow: hidden;
+			margin-left: .5rem;
+			color: var(--btn-color);
+			
+			.material-symbols-outlined {
+				font-size: 20px;
+			}
+			
+			.title {
+				font-size: 0px;
+				transition-property: font-size;
+				transition-duration: .2s;
+				transition-delay: .1s;
+			}
+			
+			&:hover {
+				color: var(--btn-hover-color);
+				
+				.title {
+					font-size: 1rem;
+					/*縮小時也要*/
+					transition-property: font-size;
+					transition-duration: .1s;
+					transition-delay: .5s;
+				}
+			}
+		}
+		
+		/* Page Toolbar */
+		a.btn-home {
+			background-color: hsl(340, 82%, 52%);
+			&:hover {
+				background-color: hsl(340, 82%, 56%);
+			}
+		}
+		a.btn-profile {
+			background-color: hsl(187, 100%, 42%);
+			&:hover {
+				background-color: hsl(187, 100%, 46%);
+			}
+		}
+		a.btn-create {
+			background-color: hsl(88, 50%, 53%);
+			&:hover {
+				background-color: hsl(88, 50%, 57%);
+				width: calc(3ch * 3.5);
+			}
+		}
+		a.btn-return {
+			margin-left: 0;
+			margin-right: .5rem;
+			/* border: 1px solid #000; */
+			
+			&:hover {
+				width: calc(4ch * 3.5);
+				background-color: #bcaaa4;
+				color: rgba(0 0 0 / .87);
+			}
+		}
+	}
+}
+

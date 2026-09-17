@@ -1,0 +1,193 @@
+/* New Release Style */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+form, section.statistics-store {
+	margin-block-start: 0 !important;
+}
+
+/* Data 格式欄位不同, 不套用_component*/
+.store-content {
+	padding: 1rem;
+	
+	/* 門市 */
+	.statistics-store {
+		&.bafang {
+			--table-bg: #4fc3f7; 			/* light-2 */
+			--table-bg-dark: #0288d1; 		/* dark-2 */
+			--table-fixed-bg: #b3e5fc; 		/* light-4 */
+			--table-fixed-color: #01579b;	/* dark-4 */
+			--table-stripes: #e1f5fe;		/* light-5 */
+		}
+		&.buygood {
+			--table-bg: #80deea;
+			--table-bg-dark: #0097a7;
+			--table-fixed-bg: #b2ebf2;
+			--table-fixed-color: #01579b;
+			--table-stripes: #e0f7fa; 
+		}
+		
+		position: relatvie;
+		width: auto;
+		max-height: calc(100vh - 128px - 2rem - 2rem - 2rem); 
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: var(--table-bg-dark) var(--table-bg); /*thumb - track*/
+		margin: 0;
+		padding: 0;
+		border: 1px solid var(--table-bg-dark);
+		
+		table {
+			table-layout: fixed;
+			min-width: 100%;
+			width: max-content;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			border-radius: 4px;
+			
+			caption {
+				background-color: var(--table-bg);
+			}
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+			
+			thead {
+				tr {
+					th {
+						position: sticky;
+						top: 0;
+						z-index: 5;
+						word-break: keep-all;
+						background-color: var(--table-bg);
+						width: 120px;
+						color: rgba(0, 0, 0, .87);
+						
+						&:nth-of-type(4) {
+							width: 200px;
+						}
+						&:nth-of-type(5) {
+							width: 300px;
+						}
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					td {
+						color: #424242;
+					}
+				}
+			}
+		}
+	}
+}
+
+.area-content {
+	padding: 1rem;
+	max-height: calc(100vh - 144px);
+	overflow: auto;
+	/* scrollbar-width: thin; */
+	scrollbar-color: var(--table-bg-dark) var(--table-bg); /*thumb - track*/
+		
+	/* 區域彙總 */
+	.statistics-area {
+		--table-bg: #ffffff; 			/* light-2 */
+		--table-bg-dark: #424242; 		/* dark-2 */
+		--table-fixed-bg: #ffffff; 		/* light-4 */
+		--table-fixed-color: #424242;	/* dark-4 */
+		--table-stripes: #ffffff;		/* light-5 */
+		
+		position: relatvie;
+		width: auto;
+		margin: 0;
+		border: 1px solid var(--table-bg-dark);
+		background-color: var(--table-bg);
+		
+		table {
+			table-layout: fixed;
+			min-width: 100%;
+			width: max-content;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			border-radius: 4px;
+			
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+			
+			tr td span {
+				display: inline-block;
+				min-width: 30px;
+			}
+		}
+	}
+	
+	/* 門市 */
+	.statistics-store {
+		&.bafang {
+			--table-bg: #4fc3f7; 			/* light-2 */
+			--table-bg-dark: #0288d1; 		/* dark-2 */
+			--table-fixed-bg: #b3e5fc; 		/* light-4 */
+			--table-fixed-color: #01579b;	/* dark-4 */
+			--table-stripes: #e1f5fe;		/* light-5 */
+		}
+		&.buygood {
+			--table-bg: #80deea;
+			--table-bg-dark: #0097a7;
+			--table-fixed-bg: #b2ebf2;
+			--table-fixed-color: #01579b;
+			--table-stripes: #e0f7fa; 
+		}
+		
+		position: relatvie;
+		width: auto;
+		margin: 0;
+		border: 1px solid var(--table-bg-dark);
+		
+		table {
+			table-layout: fixed;
+			min-width: 100%;
+			width: max-content;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			border-radius: 4px;
+			
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+			
+			thead {
+				tr {
+					th {
+						/* position: sticky;
+						top: 0;
+						z-index: 5; */
+						word-break: keep-all;
+						background-color: var(--table-bg);
+						width: 120px;
+						color: rgba(0, 0, 0, .87);
+						padding-top: 1rem;
+						
+						&:nth-of-type(5) {
+							width: 280px;
+						}
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					td {
+						color: #424242;
+					}
+				}
+			}
+		}
+	}
+}

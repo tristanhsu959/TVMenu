@@ -1,0 +1,10 @@
+/* Role list */
+
+.role-list {
+	table tbody {
+		tr td.col-area .chip {
+			font-size: .75rem;
+		}
+	}
+}
+

@@ -1,0 +1,76 @@
+/* list */
+section.user-data {
+	.grid {
+		.password-hint div {
+			display: flex;
+			align-items: center;
+			min-block-size: 3rem;
+		}
+		
+		.field > i.btn-icon {
+			pointer-events: auto;
+			
+			button {
+				background-color: transparent;
+				color: #000;
+			}
+		}
+	}
+	
+	.role-permission, .area-permission {
+		ul.list li {
+			&:hover {
+				background-color: #e1bee7;
+			}
+		}
+	}
+
+	/* 區域 */
+	.area-permission {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		position: relative;
+		gap: 1rem;
+		
+		.form-check-label {
+			width: 160px;
+			height: 48px;
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: hsla(200, 19%, 18%, .87);
+			/* border: 1px solid #546e7a; */
+			border-radius: 8px;
+			color: rgba(255, 255, 255, .18);
+			font-size: 1rem;
+			padding: 1rem;
+			box-sizing: border-box;
+			transition: border-color, color 0.2s ease-in-out 0.1s;
+			cursor: pointer;
+						
+			input {
+				display: none;
+			}
+			
+			&:before {
+				content: '\f236';
+				font-family: 'Material Symbols Outlined';
+				font-size: 1.3rem;
+				margin-right: .5rem;
+			}
+			
+			&:has(input:checked) {
+				/* border-color: #76ff03; */
+				color: #fafafa;
+				background-color: #aa00ff;
+				
+				&:before {
+					content: '\e86c';
+				}
+			}
+		}
+	}
+}
+

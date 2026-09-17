@@ -1,0 +1,23 @@
+
+/* Data 格式欄位不同, 不套用_component*/
+.store-list {
+	
+	.area-store {
+		--table-stripes: #f3e5f5;
+		
+		table {
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+		}
+	}
+}
+
+.content-wrapper {	
+	.update-form {
+		.btn-clear {
+			margin-right: 1rem;
+		}
+	}
+}
+

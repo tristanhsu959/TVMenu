@@ -1,0 +1,103 @@
+/* Main Style */
+
+body {
+	--theme-bg: #fafafa; /* Signin */
+	--theme-surface-bg: #fafafa;
+	--theme-primary-color: rgba(0 0 0 / 1);
+	--theme-secondary-color: rgba(0 0 0 / .7);
+	--theme-placeholder-color: rgba(0 0 0 / .4);
+	--theme-disabled-color: rgba(0 0 0 / .3); /* disabled or hint */
+	--theme-divider-color: rgba(0 0 0 / .12);
+	
+	background-color: var(--theme-bg);
+	
+	main {
+		display: flex;
+	}
+	.content-wrapper {
+		flex-grow: 1;
+		height: 100vh;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		
+		.divider {
+			width: 0;
+			height: 30%;
+			border-left: 1px solid var(--theme-divider-color);
+			margin-left: 2rem;
+			margin-right: 2rem;
+		}
+		
+		/* Logo */
+		.left-content {
+			width: 320px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			
+			img {
+				position: relative;
+				width: 100%;
+				height: auto;
+			}
+			
+			.copyright {
+				font-family: 'Orbitron';
+				font-size: .75rem;
+				font-weight: bold;
+				
+				i {
+					font-family: 'Roboto';
+					font-style: normal;
+					font-size: .875rem;
+					color: var(--brand-red-bg);
+				}
+			}
+		}
+		
+		.right-content {
+			width: 400px;
+			padding: 4rem 2rem;
+			
+			.head {
+				padding: 0;
+				margin: 1rem 0;
+				
+				img {
+					width: 32px;
+					height: auto;
+				}
+				.title {
+					font-family: 'Orbitron';
+					font-size: 1.4rem;
+				}
+				h6 {
+					color: var(--theme-secondary-color); 
+					font-weight: normal;
+					font-size: .875rem;
+					padding-top: .5rem;
+					padding-bottom: .5rem;
+				}
+			}
+			
+			.input-field {
+				margin: 1rem 0;
+				
+				.group-text {
+					width: 110px;
+					color: var(--theme-placeholder-color);
+					margin-right: .75rem;
+				}
+			}
+			
+			.btn.btn-signin {
+				margin: 3rem 0 0;
+				display: block;
+				width: 100%;
+			}
+		}
+	}
+}

@@ -1,0 +1,132 @@
+/* Page table common */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+section.purchase-sale-list {
+	.store-info {
+		display: inline-flex;
+		background-color: #263238;
+		margin-right: .5rem;
+		color: #ce93d8;
+		
+		.search-date {
+			display: flex;
+			flex-direction: column;
+			justify-content: start;
+			align-items: center;
+			font-size: .75rem;
+			background-color: #37474f;
+			padding: .5rem;
+			color: #f48fb1;
+			
+			.day {
+				font-size: 3rem;
+				padding: .25rem;
+				color: #f06292;
+			}
+		}
+		
+		.info {
+			margin-left: .5rem;
+			font-size: .875rem;
+			
+			.header {
+				font-size: 1.2rem;
+				color: #ea80fc;
+			}
+		}
+	}
+}
+	
+.page {
+	padding: 1rem;
+	
+	/* Detail table */
+	.statistics-list {
+		
+		/* purchase table by brand */
+		&.bafang {
+			--table-bg: #4fc3f7; 			/* light-2 */
+			--table-bg-dark: #0288d1; 		/* dark-2 */
+			--table-fixed-bg: #b3e5fc; 		/* light-4 */
+			--table-fixed-color: #01579b;	/* dark-4 */
+			--table-stripes: #e1f5fe;		/* light-5 */
+		}
+		&.buygood {
+			--table-bg: #80deea;
+			--table-bg-dark: #0097a7;
+			--table-fixed-bg: #b2ebf2;
+			--table-fixed-color: #01579b;
+			--table-stripes: #e0f7fa; 
+		}
+		
+		/* sale table use same define */
+		&.sale {
+			--table-bg: #f06292;
+			--table-bg-dark: #c2185b;
+			--table-fixed-bg: #f8bbd0;
+			--table-fixed-color: #880e4f;
+			--table-stripes: #fce4ec; 
+		}
+		
+		position: relatvie;
+		width: auto;
+		max-height: calc(100vh - 230px - 120px);
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: var(--table-bg-dark) var(--table-bg); /*thumb - track*/
+		margin: 0;
+		border: 1px solid var(--table-bg-dark);
+		
+		table {
+			table-layout: fixed
+			min-width: 100%;
+			width: 100%;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			border-radius: 4px;
+			
+			&.stripes tbody tr:nth-child(odd) {
+				background-color: var(--table-stripes);
+			}
+			
+			thead {
+				tr {
+					th {
+						position: sticky;
+						top: 0;
+						z-index: 5;
+						word-break: keep-all;
+						background-color: var(--table-bg);
+						min-width: 150px;
+						color: rgba(0, 0, 0, .87);
+						padding-top: 1rem;
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					td {
+						font-weight: normal;
+						color: #424242;
+						
+						&:nth-of-type(1) {
+							background-color: var(--table-fixed-bg);
+							color: var(--table-fixed-color);
+						}
+						&:nth-of-type(2) {
+							background-color: var(--table-fixed-bg);
+							color: var(--table-fixed-color);
+						}
+					}
+					&:last-child td {
+						color: #f44336;
+					}
+				}
+			}
+		}
+	}
+}

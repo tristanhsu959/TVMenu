@@ -1,0 +1,49 @@
+// 1. 增加執行時間限制
+set_time_limit(0);
+
+$query = $db
+    // 關鍵：加入 NOLOCK 提示減少鎖定競爭
+    ->from(DB::raw('SALE_DETAIL as a WITH (NOLOCK)')) 
+    ->select('a.SHOP_ID', 'a.QTY', 'b.SALE_DATE', 'c.SHOP_NAME')
+    
+    // Join 時也加上 NOLOCK
+    ->join(DB::raw('SALE00 as b WITH (NOLOCK)'), function($join) {
+        $join->on('a.SHOP_ID', '=', 'b.SHOP_ID')
+             ->on('a.SALE_ID', '=', 'b.SALE_ID');
+    })
+    ->join(DB::raw('SHOP00 as c WITH (NOLOCK)'), 'a.SHOP_ID', '=', 'c.SHOP_ID')
+    
+    ->whereBetween('b.SALE_DATE', [$startDateTime, $endDateTime]) // 使用 Between 通常較優
+    ->where(function ($q) use ($productIds, $valueAdded) {
+        // 強制指定定序以避免隱含轉換 (Implicit Conversion)
+        $q->whereIn(DB::raw('a.PROD_ID COLLATE Chinese_PRC_CI_AS'), $productIds);
+        
+        if (! empty($valueAdded)) {
+            $q->orWhere('a.TASTE_MEMO', 'like', "%{$valueAdded}%");
+        }
+    });
+
+// 2. 處理選填的商店過濾
+if (! is_null($shopIds)) {
+    $query->whereIn('a.SHOP_ID', $shopIds);
+}
+
+/**
+ * ⚡ 核心優化：移除外部排序，改用流式抓取寫入 Local
+ */
+// 不要在此 $query 下 orderBy，改到 Local DB 再排
+
+$query->lazy(3000)->each(function ($batch) {
+    // 將這一批（3000筆）直接塞入 Local DB 的暫存表
+    // 假設 local 表叫 temp_sales_results
+    DB::table('temp_sales_results')->insert(
+        $batch->map(fn($item) => (array)$item)->toArray()
+    );
+});
+
+// 3. 在 Local DB 進行最後的 Group By 與 Order By
+$finalResults = DB::table('temp_sales_results')
+    ->select('SHOP_ID', 'SHOP_NAME', DB::raw('SUM(QTY) as TOTAL_QTY'))
+    ->groupBy('SHOP_ID', 'SHOP_NAME')
+    ->orderBy('SHOP_ID')
+    ->get();

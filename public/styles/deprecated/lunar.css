@@ -1,0 +1,138 @@
+/* Main Style */
+
+body {
+	background-color: #fafafa;
+	
+	main {
+		display: flex;
+		justify-content: center;
+		
+		.content-wrapper {
+			padding: 2rem;
+			width: 85%;
+			height: 100vh;
+		}
+	}
+	
+	.lunar-warpper {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		
+		/*section*/
+		.lunar-cars {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			
+			h4 {
+				font-weight: bold;
+				height: 1.8rem;
+				line-height: 1.2;
+			}
+			
+			.group {
+				height: 64px;
+				display:flex;
+				align-items: center;
+				margin-bottom: 1rem;
+				padding: 1rem 1.5rem;
+				padding-right: 0;
+				background-color: #263238;
+				
+				.header {
+					color: #fff;
+					margin-right: 1rem;
+					span {
+						color: #333;
+						font-weight: 600;
+						background-color: #ffd740;
+						padding: .25rem .75rem;
+						margin-right: .5rem;
+						border-radius: 5rem;
+					}
+				}
+				.btn {
+					display:flex;
+					justify-content: center;
+					align-items: center;
+					width: 64px;
+					height: 64px;
+					color: #fff;
+					border-radius: 0;
+					
+					&.btn-assign {
+						background-color: hsl(4,90%,58%); 
+					
+						&:hover {
+							background-color: hsl(4,90%,48%);
+						}
+					}
+					&.btn-restore {
+						background-color: hsl(291,64%,42%); 
+					
+						&:hover {
+							background-color: hsl(291,64%,32%);
+						}
+					}
+					&.btn-search {
+						background-color: hsl(186,100%,50%); 
+					
+						&:hover {
+							background-color: hsl(186,100%,40%);
+						}
+					}
+				}
+				
+				
+			}
+			
+		}
+		
+		.lunar-cars-result {
+			flex: 1;
+			padding: 0 .25rem;
+			
+			h6 {
+				display: flex;
+				align-items: flex-end;
+				font-weight: bold;
+				color: #333;
+				height: 1.8rem;
+				.badge {
+					margin-left: .5rem;
+				}
+			}
+							
+			.list-group {
+				height: calc(100vh - 4rem - 40px);
+				overflow-y: auto;
+				
+				.list-group-item {
+					display: flex;
+					justify-content: space-between;
+					
+					.shop {
+						display: flex;
+						flex-direction: column;
+						color: #212121;
+						
+						span:first-child {
+							color: #999;
+						}
+					}
+					.car-no {
+						display: flex;
+						align-items:center;
+						font-family: 'Orbitron';
+						font-size: 1.25rem;
+						color: #f44336;
+						font-weight: bold;
+					}
+				}
+			}
+		}
+	}
+}

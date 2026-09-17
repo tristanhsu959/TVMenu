@@ -1,0 +1,310 @@
+/* New Release Style */
+body {
+	--theme-surface-bg : var(--theme-surface-l1); /* default */
+	--tab-color: rgba(0, 151, 167, .87);
+}
+
+.content-wrapper {
+	
+	/* height: 100vh; */
+	
+	.searchbar {
+		display: flex;
+		align-items: center;
+		padding: 1rem;
+		margin-bottom: 1rem;
+		border-radius: .5rem;
+		background: var(--theme-surface-bg);
+		box-sizing: border-box;
+		
+		.field {
+			margin-right: 1rem;
+		}
+		.btn {
+			margin-right: .5rem;
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+		.page-action {
+			display: flex;
+			
+			&:before {
+				content: '';
+				border-left: 2px solid #777;
+				margin: 0 1rem;
+			}
+		}
+	}
+	
+	.nav-tab {
+		height: 52px;
+		position: absolute;
+		left: 50%;
+		bottom: .5rem;
+		transform: translateX(-50%);
+		justify-content: center;
+		background-color: rgba(255, 255, 255, .87);
+		z-index: 20;
+		display: flex;
+		border-radius: 2rem;
+		/* padding: .1rem; */
+		border: 4px solid var(--tab-color);
+		
+		.nav-link {
+			height: 100%;
+			background-color: transparent;
+			border-radius: 2rem;
+			border: 2px solid transparent;
+			color: var(--tab-color);
+			
+			&.active {
+				border: 2px solid rgba(255, 255, 255, .7);
+				background-color: var(--tab-color);
+				color: rgba(255, 255, 255, .87);
+			}
+		}
+	}
+}
+
+/* Data */
+.tab-content {
+	/* height: calc(100% - 2rem); */
+	background-color: transparent;
+	padding: 0;
+	/* margin: 0 1rem 80px; */
+	
+	.tab-pane {
+		padding: 1rem;
+		border-radius: .5rem;
+		background-color: var(--theme-surface-bg);
+		box-sizing: border-box;
+		/* background-color: rgba(255, 255, 255, .87); */
+		/* box-shadow: 1px 1px 4px 2px rgba(255, 255, 255, 0.75); */
+		
+		&#area {
+			background-color: #00bcd4; /* primary */
+		}
+		&#shop {
+			background-color: #00bcd4;
+		}
+	}
+	
+	/* 區域彙總 */
+	.statistics-area.section-wrapper {
+		width: auto;
+		padding: 0;
+		margin: 0;
+		overflow-x: auto;
+		scrollbar-color: #0097a7 #00bcd4; /*thumb - track*/
+		
+		&.empty {
+			color: #ffcdd2;
+		}
+		
+		.d-table-row {
+			margin: 0;
+			
+			.d-table-cell {
+				width: fit-content;
+				padding: .5rem;
+				background-color: #e0f7fa;  /* lighten-5 */
+				white-space: nowrap;
+				text-align: right;
+				
+				/* first column */
+				&:first-child {
+					position: sticky;
+					left: 0;
+					top: 0;
+					background-color: #b2ebf2; /* lighten-4 */
+					padding-left: 1rem;
+					padding-right: 1rem;
+				}
+			}
+			
+			/* 須放在這裏避免bg被覆蓋 first row */
+			&:first-child .d-table-cell {
+				background-color: #00bcd4; /* primary */
+				color: rgba(255, 255, 255, .87);
+			}
+			
+			&:last-child .d-table-cell {
+				border-top: 1px dashed rgba(0, 0, 0, .12);
+				color: #f44336;
+			}
+		}
+	}
+	
+	/* 門市 */
+	.statistics-shop.section-wrapper {
+		position: relatvie;
+		width: auto;
+		max-height: calc(100vh - 64px - 5.5rem - 46px - 1.5rem);
+		overflow: auto;
+		/* scrollbar-width: thin; */
+		scrollbar-color: #0097a7 #00bcd4;
+		margin: 0;
+		
+		&.empty {
+			color: #b71c1c;
+		}
+		
+		.d-table-row {
+			margin: 0;
+			
+			&:nth-child(odd) .d-table-cell {
+				background-color: #fff;
+			}
+			
+			.d-table-cell {
+				width: fit-content;
+				padding: .5rem;
+				background-color: #e0f7fa; /* lighten-5 */
+				white-space: nowrap;
+				text-align: right;
+				
+				/* first column */
+				&:nth-child(1) {
+					position: sticky;
+					left: 0;
+					top: 0;
+					background-color: #b2ebf2; /* lighten-4 */
+					padding-left: 1rem;
+					padding-right: .5rem;
+					z-index: 5;
+				}
+				&:nth-child(2) {
+					position: sticky;
+					left: 0;
+					top: 0;
+					background-color: #b2ebf2; /* lighten-4 */
+					padding-left: .5rem;
+					padding-right: .5rem;
+					z-index: 5;
+				}
+				&:nth-child(3) {
+					position: sticky;
+					left: 0;
+					top: 0;
+					background-color: #b2ebf2; /* lighten-4 */
+					padding-left: .5rem;
+					padding-right: 1rem;
+					z-index: 5;
+				}
+				/* &:last-child  {
+					border-left: 1px dashed rgba(0, 0, 0, .12);
+					color: #f44336;
+				} */
+			}
+			
+			/* 須放在這裏避免bg被覆蓋 */
+			&:first-child .d-table-cell {
+				position: sticky;
+				top: 0;
+				background-color: #00bcd4;
+				color: rgba(255, 255, 255, .87);
+				z-index: 5;
+				
+				&:nth-child(1) {
+					z-index: 6;
+				}
+				&:nth-child(2) {
+					z-index: 6;
+				}
+				&:nth-child(3) {
+					z-index: 6;
+				}
+			}
+		}
+		
+		table {
+			--bs-table-striped-bg : #f1f8e9;
+			
+			table-layout: fixed;
+			min-width: 100%;
+			width: auto;
+			overflow: unset;
+			padding: 0;
+			margin: 0;
+			/* border: 1px solid var(--theme-divider-color); */
+			
+			thead {
+				tr {
+					th {
+						position: sticky;
+						top: 0;
+						z-index: 5;
+						word-break: keep-all;
+						background-color: #aed581;
+						min-width: 80px;
+						color: rgba(0, 0, 0, .87);
+						
+						&.col-date span {
+							display: flex;
+							flex-direction: column;
+							justify-content: center;
+							padding: 0 .5rem;
+							
+							&:first-child {
+								/* font-size: .9rem; */
+								/* background-color: #33691e; */
+								/* border-radius: 4px; */
+								color: rgba(0, 0, 0, .6);
+							}
+						}
+						
+						&:nth-child(1) {
+							min-width: 100px;
+							position: sticky;
+							left: 0;
+							z-index: 6;
+						}
+						&:nth-child(2) {
+							min-width: 100px;
+							position: sticky;
+							left: 100px;
+							z-index: 6;
+						}
+						&:nth-child(3) {
+							min-width: 200px;
+							position: sticky;
+							left: 200px;
+							z-index: 6;
+						}
+					}
+				}
+			}
+			
+			tbody {
+				tr {
+					th {
+						position: sticky;
+						font-weight: normal;
+						z-index: 5;
+						color: #1b5e20; /*#1b3823;*/
+						/* border-bottom-width: 0; */
+						
+						&:nth-child(1) {
+							left: 0;
+						}
+						&:nth-child(2) {
+							left: 100px;
+						}
+						&:nth-child(3) {
+							left: 200px;
+						}
+					}
+					
+					td {
+						color: #424242;
+						/* 總計 */
+						/* &:nth-last-child(-n + 2) {
+							color: #f44336;
+						} */
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,134 @@
+/* Common Style */
+/* Body Message Dialog ... */
+
+body {
+	--scrollbar-width: calc(100vw - 100%);
+	
+	font-family: 'Roboto', 'Orbitron', sans-serif;
+	font-size: 16px;
+	margin: 0;
+	padding: 0;
+	background-color: var(--theme-bg);
+	/* background: linear-gradient(to bottom, #121212, #1c1c1c, #262626, #313131, #3c3c3c); */
+	/* menu + content-wrapper */
+	main {
+		max-width: 100vw;
+		min-height: 100vh;
+		padding: 0;
+		margin: 0;
+		display: flex; 
+		/* justify-content: cetner; */
+	}
+	
+	/* actionbar + section-wrapper */
+	.content-wrapper{
+		position: relative;
+		/* flex-grow: 1; */
+		width: calc(100vw - 256px - var(--scrollbar-width)); /* 避免scrollbar寬度影響 */
+		/* height: calc(100vh - 64px); */ /* 100vh sticky會失效 */
+		box-sizing: border-box;
+		padding: 0 1rem 1rem;
+	}
+	
+	/* list no data */
+	.section-wrapper {
+		/* &:first-of-type {
+			margin-top: .25rem;
+		} */
+		.empty-list {
+			.row {
+				padding: 0 .5rem;
+				border-bottom-width: 0;
+				background-color: #E57373; /* #e57373; */
+				
+				.col {
+					padding: .5rem;
+					color: #fafafa;
+				}
+			}
+		}
+	}
+}
+
+/* Google Icon */
+.filled-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Common row divider */
+.divider {
+	display: flex;
+	
+	&:before, &:after {
+		content: '';
+		flex: 1;
+		height: 1px;
+		background-color: rgba(255, 255, 255, .12);
+		margin-top: .5rem;
+		margin-bottom: .5rem;
+	}
+}
+
+
+/* Dialog */
+#alert_modal {
+	.modal-header {
+		color: #f44336;
+	}
+	.modal-footer {
+		border-width: 1px;
+	}
+}
+
+#confirm_modal {
+	.modal-header {
+		color: #03a9f4;
+	}
+	.modal-footer .btn.btn-outline-secondary {
+		border: 1px solid rgba(0, 0, 0, .6);
+		color: rgba(0, 0, 0, .6);
+		
+		&:hover {
+			color: rgba(255, 255, 255, .87);
+		}
+	}
+}
+
+
+/* Loading bar */
+.loading-wrapper {
+	width: 100%;
+	height: 4px;
+	border-radius: 1rem;
+	/* background-color: var(--theme-bg); */
+	overflow: hidden;
+	
+	position: fixed;
+	top: calc(64px - 8px);
+	display: none;
+	z-index: 20;
+	
+	&.active {
+		display: block;
+	}
+}
+
+.loading-bar {
+	width: 30%; 
+	height: 100%;
+	border-radius: 1rem;
+	background-color: rgba(128, 222, 234, .87);
+	position: absolute;
+	top: 0;
+	left: -30%;
+	animation: infinite-loading 2s linear infinite;
+}
+
+@keyframes infinite-loading {
+	0% {
+		left: -30%; /* Starts off-screen left */
+	}
+	100% {
+		left: 100%; /* Moves across to off-screen right */
+	}
+}

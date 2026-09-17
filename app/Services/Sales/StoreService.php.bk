@@ -1,0 +1,720 @@
+<?php
+
+namespace App\Services\Sales;
+
+use App\Facades\AppManager;
+use App\Facades\PosManager;
+use App\Facades\PurchaseManager;
+use App\Repositories\SalesRepository;
+use App\Services\Sales\StoreService;
+use App\Services\Sales\AreaService;
+use App\Libraries\ResponseLib;
+use App\Libraries\HelperLib;
+use App\Enums\Brand;
+use App\Enums\Functions;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Fluent;
+use Illuminate\Support\Number;
+use Exception;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Common\Entity\Cell;
+use OpenSpout\Common\Entity\Row;
+
+
+#Partial service
+class StoreService
+{
+	private $_statistics	= [];
+	
+	public function __construct(protected SalesRepository $_repository)
+	{
+	}
+	
+	/* Search data
+	 * @params: array
+	 * @return: array
+	 */
+	public function analysis($params)
+	{
+		try
+		{
+			$this->_prepareData($params);
+			
+			$this->_outputReport($params);
+		
+			return $this->_generateStatistics($params);
+		}
+		catch(Exception $e)
+		{
+			throw new Exception($e->getMessage());
+		}
+	}
+	
+	/* Generate statistics data
+	 * @params: object
+	 * @return: array
+	 */
+	private function _generateStatistics($params)
+	{
+		$statistics['brandId']		= $params->brand->value;
+		$statistics['brandCode']	= $params->brand->code();
+		$statistics['type'] 		= $params->type;
+		$statistics['startDate'] 	= $params->stDate;
+		$statistics['endDate']		= $params->endDate;
+		$statistics['storeName']	= $params->storeName;
+		$statistics['store']		= $params->store;
+		$statistics['productList']	= $params->productList;
+		$statistics['exportToken']	= '';
+		$statistics['hasResult']	= FALSE;
+		
+		#無值不cache
+		if (! empty($statistics['store']['data']))
+		{
+			$statistics['hasResult']	= TRUE;
+			$statistics['exportToken'] 	= bin2hex($params->cacheKey); #hex2bin
+			Cache::put($params->cacheKey, $statistics, now()->addMinutes(10));
+		}
+		
+		return $statistics;
+	}
+	
+	/* ====================== Prepare data ====================== */
+	/* Get search data
+	 * @params: array
+	 * @return: array
+	 */
+	private function _prepareData($params)
+	{
+		try
+		{
+			#1. Get product id list for sql
+			$this->_getProductParams($params);
+			
+			#2. Get all shops with area permission
+			$this->_buildProductMap($params);
+			
+			#3. Get all shops with area permission
+			$this->_getStoreList($params);
+			
+			#4. Get shop id by Name
+			$this->_getStoreIdByName($params);
+			
+			#5.get data
+			$this->_getDataFromDB($params);
+			
+			#6.build to base data
+			$this->_buildBaseData($params);
+			dd($params);
+		}
+		catch(Exception $e)
+		{
+			Log::channel('appServiceLog')->error($e->getMessage(), [ __class__, __function__, __line__]);
+			throw new Exception($e->getMessage());
+		}
+	}
+	
+	
+	
+	/* 取ErpNo
+	 * @params: eunums
+	 * @return: array
+	 */
+	private function _getProductParams($params)
+	{
+		try
+		{
+			#Dashboard product id
+			$productList = $this->_repository->getProductByIds($params->productIds);
+			
+			#分開primary & secondary
+			$primaryIds = collect($productList)->filter(function($item, $key){
+				return $item['isPrimary'];
+			})->pluck('erpNo')->toArray();
+			
+			$secondaryIds = collect($productList)->filter(function($item, $key){
+				return ! $item['isPrimary'];
+			})->pluck('erpNo')->toArray();
+			
+			#建立product list為key-value by erpNo, 做為取回資料mapping用
+			$productList = collect($productList)->groupBy('erpNo')->map(function($item, $key) {
+				$temp['productId'] 	= $item->pluck('productId')->first();
+				$temp['productName']= $item->pluck('productName')->first();
+				
+				return $temp;
+			})->toArray();
+			
+			$params->productList	= $productList;
+			$params->primaryIds		= $primaryIds;
+			$params->secondaryIds 	= $secondaryIds;
+		}
+		catch(Exception $e)
+		{
+			Log::channel('appServiceLog')->error($e->getMessage(), [ __class__, __function__, __line__]);
+			throw new Exception('解析銷售參數發生錯誤');
+		}
+	}
+	
+	/* Product list header
+	 * @params: collection
+	 * @return: array
+	 */
+	private function _buildProductMap($params)
+	{
+		/*
+		[ productId => productName
+			2 => "橙汁排骨"
+			3 => "蕃茄牛三寶"
+			4 => "老皮嫩肉"
+			5 => "主廚秘製滷肉飯"
+			7 => "牛小排飯"
+		]
+		*/
+		
+		$productList = $params->productList;
+		
+		#是以DB product table有設定的產品為基礎
+		$header =  collect($productList)->mapWithKeys(function ($item, $key) {
+			return [$item['productId'] => $item['productName']];
+		})->toArray();
+		
+		$params->productHeader = $header;
+	}
+	
+	/* 門店資料
+	 * @params: collection
+	 * @return: array
+	 */
+	private function _getStoreList($params)
+	{
+		#$params->allStoreList 	= PosManager::getAllStores($params->brand, $params->userAreaIds); #all shops
+		#$params->activeShopList = PosManager::getActiveStores($params->brand, $params->userAreaIds); #only active shops
+		
+		##20260630:改用訂貨門店來mapping/但因資料可能有缺失, 原POS門店還是得要保留(取代activeShopList)
+		$storeList = PurchaseManager::getStoreList($params->brand, $params->opCenter, $params->userAreaIds, $params->stDate, $params->endDate);
+		$params->storeList = PurchaseManager::filterFactoryStore($storeList);
+	}
+	
+	/* 取查詢的門店資料
+	 * @params: collection
+	 * @return: array
+	 */
+	private function _getStoreIdByName($params)
+	{
+		$storeName = $params->storeName;
+		
+		$storeIds = collect($params->storeList)->filter(function($item, $key) use($storeName){
+			return Str::contains($item['storeName'], $storeName);
+		})->pluck('posId')->values()->all();
+		
+		if (empty($storeIds))
+			throw new Exception('查無符合門店');
+		
+		$params->storeIds = $storeIds;
+	}
+	
+	/* Get buy good data
+	 * @params: fluent
+	 * @return: array
+	 */
+	private function _getDataFromDB($params)
+	{
+		try
+		{
+			/* Return format */
+			/*
+			array:9 [
+				"shopId" => "103002"
+				"productId" => "UC06000002"
+				"price_sum" => 111 => price * qty + discount
+				"qty_sum" => 99
+				"storeName" => "御廚重慶北直營店"
+				"gid" => "A01"
+				"productName" => "炸雞腿飯"
+			]
+			*/
+			
+			$brand 			= $params->brand;
+			$stDate			= (new Carbon($params->stDate))->format('Y-m-d 00:00:00');
+			$endDate 		= (new Carbon($params->endDate))->addDay()->format('Y-m-d H:i:s');
+			$primaryIds 	= $params->primaryIds;
+			$secondaryIds 	= $params->secondaryIds;
+			$userAreaIds 	= $params->userAreaIds;
+			$storeIds		= $params->storeIds;
+			
+			$result = $this->_repository->getSaleDataByStore($brand, $userAreaIds, $stDate, $endDate, $primaryIds, $secondaryIds, $storeIds);
+			dd($result);
+			$params->saleData = $result;
+		}
+		catch(Exception $e)
+		{
+			Log::channel('appServiceLog')->error($e->getMessage(), [ __class__, __function__, __line__]);
+			throw new Exception('讀取POS系統訂單資料失敗');
+		}
+	}
+	
+	
+	/* Rebuild data format
+	 * @params: Fluent
+	 * @params: array
+	 * @return: array
+	 */
+	private function _buildBaseData($params)
+	{
+		/* 重整資料格式/命名/區域
+		array:11 [
+			"shopId" => "100001"
+			"storeName" => "御廚中正南昌店"
+			"erpNo" => "UC00000042"
+			"price_sum" => "360.0"
+			"qty_sum" => "3"
+			"areaId" => 1
+			"areaName" => "大台北區"
+			"productId" => 2
+			"productName" => "橙汁排骨"
+		]
+		*/
+		
+		if (empty($params->saleData))
+		{
+			$params->baseData = [];
+			return;
+		}
+		
+		$saleData = PosManager::filterDataByExceptStore($params->brand, $params->saleData);
+		$productList = $params->productList; 
+		
+		$storeList = collect($params->storeList)->mapWithKeys(function($item, $key){
+			return [$item['posId'] => $item];
+		})->all();
+		
+		$baseData = collect($saleData)->map(function($item, $key) use($productList, $storeList) {
+			$store 	= data_get($storeList, $item['shopId'], NULL); 
+			$product= data_get($productList, $item['erpNo'], NULL);
+			
+			if (is_null($store))
+				return '';
+			
+			$item['storeKey'] 	= $store['storeKey'];
+			$item['storeName'] 	= $store['storeName'];
+			$item['areaId'] 	= $store['areaId'];
+			$item['areaName']	= $store['areaName'];
+			
+			#轉換成系統設定Id and Name
+			$item['productId']	= empty($product) ? 0 : $product['productId'];
+			$item['productName']= empty($product) ? '' : $product['productName'];
+			
+			return $item;
+		})->reject(function($item, $key){
+			return empty($item);
+		});
+		
+		#補全未有銷售的門店資料(closedown = 0)
+		$saleShopIds = array_filter($baseData->pluck('shopId')->unique()->values()->toArray());
+		#$filloutShops = PosManager::getFillOutStore($params->activeShopList, $saleShopIds);
+		
+		$filloutShops = collect($storeList)->reject(function($item, $key) use($saleShopIds) {
+			return in_array($item['posId'], $saleShopIds);
+		});
+		
+		#因每個統計內容不同, 故無法寫在trait class
+		$filloutShops = collect($filloutShops)->map(function($item, $key) {
+			$temp['storeKey'] 	= $item['storeKey'];
+			$temp['shopId'] 	= $item['posId'];
+			$temp['storeName'] 	= $item['storeName'];
+			$temp['erpNo'] 		= '';
+			$temp['price'] 		= 0;
+			$temp['qty'] 		= 0;
+			$temp['discount'] 	= 0;
+			$temp['areaId'] 	= $item['areaId'];
+			$temp['areaName']	= $item['areaName'];
+			$temp['productId'] 	= 0;
+			$temp['productName']= '';
+			
+			return $temp;
+		});
+		
+		$params->baseData = $baseData->merge($filloutShops)->toArray();
+	}
+	
+	/* Rebuild data format
+	 * @params: Fluent
+	 * @params: array
+	 * @return: array
+	 */
+	/* private function _buildBaseData($params)
+	{
+		/* 重整資料格式/命名/區域
+		array:11 [
+			"shopId" => "100001"
+			"storeName" => "御廚中正南昌店"
+			"erpNo" => "UC00000042"
+			"price_sum" => "360.0"
+			"qty_sum" => "3"
+			"areaId" => 1
+			"areaName" => "大台北區"
+			"productId" => 2
+			"productName" => "橙汁排骨"
+		]
+		*
+		
+		$saleData = array_filter($this->_getDataFromDB($params));
+		
+		#要改成所有店家統計
+		#這裏只要先補全店家資料(無銷售訂單)及所需欄位
+		$productList = $params->productList; 
+		$allShopList = collect($params->allShopList)->groupBy('shopId');
+		
+		#過濾無效店家
+		$saleData = PosManager::filterDataByExceptStore($params->brand, $saleData);
+		
+		$baseData = collect($saleData)->map(function($item, $key) use($productList, $allShopList) {
+			$shop = $allShopList->get($item['shopId'])->first(); 
+			$product = data_get($productList, $item['erpNo'], NULL);
+			
+			$item['storeName'] 	= is_null($shop) ? 'NotFound' : $shop['storeName'];
+			$item['areaId'] 	= is_null($shop) ? 0 : $shop['areaId'];
+			$item['areaName']	= $shop['areaName'];
+			
+			#轉換成系統設定Id and Name
+			$item['productId']	= empty($product) ? 0 : $product['productId'];
+			$item['productName']= empty($product) ? '' : $product['productName'];
+			
+			return $item;
+		});
+		
+		#補全未有銷售的門店資料(closedown = 0)
+		$saleShopIds = $baseData->pluck('shopId')->unique()->values()->toArray();
+		$filloutShops = PosManager::getFillOutStore($params->activeShopList, $saleShopIds);
+		
+		#因每個統計內容不同, 故無法寫在trait class
+		$filloutShops = collect($filloutShops)->map(function($item, $key) {
+			$temp['shopId'] 	= $item['shopId'];
+			$temp['storeName'] 	= $item['storeName'];
+			$temp['erpNo'] 		= '';
+			$temp['price_sum'] 	= 0;
+			$temp['qty_sum'] 	= 0;
+			$temp['areaId'] 	= $item['areaId'];
+			$temp['areaName']	= $item['areaName'];
+			$temp['productId'] 	= 0;
+			$temp['productName']= '';
+			
+			return $temp;
+		});
+		
+		$params->baseData = $baseData->merge($filloutShops)->toArray();
+	} */
+	
+	/* ====================== Prepare data End ====================== */
+	
+	
+	/* ========================== 統計 ========================== */
+	/* ========================================================== */
+	/* 取使用者可讀取區域資料(原主邏輯不動)
+	 * @params: array
+	 * @return: array
+	 */
+	private function _outputReport($params)
+	{
+		try
+		{
+			#1.區域
+			$this->parsingArea($params);
+			
+			#2.店別
+			$this->parsingStore($params);
+							
+			return TRUE;
+		}
+		catch(Exception $e)
+		{
+			Log::channel('appServiceLog')->error($e->getMessage(), [ __class__, __function__, __line__]);
+			throw new Exception('解析報表資料發生錯誤');
+		}
+	}
+	
+	/* 區域彙總
+	 * @params: array
+	 * @params: int
+	 * @return: array
+	 */
+	public function parsingArea($params)
+	{
+		/* Output
+		"area" => [
+			"大台北區" => [
+				"totalQty" => 101
+				"totalAmount" => 101
+				"products" => productNo => [
+					'productNo'
+					'productName'
+					'unit'
+					'quantity'
+					'amount'
+				], ....
+			]
+			"大高雄區" => array:5 []
+			"宜蘭區" => array:5 []
+			"中彰投區" => array:5 []
+			"雲嘉南區" => array:5 []
+			"桃竹苗區" => array:5 []
+		]
+		*/
+		
+		$params->set('area.header', []);
+		$params->set('area.data', []);
+		$baseData = $params->baseData;
+		
+		#會有無設定區域權限的狀況, 須判別
+		if (empty($baseData))
+			return [];
+		
+		$header = [
+					'areaName' 	=> '區域', 
+					'shopCount'	=> '店家數',
+					'products' 	=> $params->productHeader
+				];
+		$params->set('area.header', $header);
+		
+		$result = collect($baseData)->sortBy('areaId')->groupBy('areaId')->map(function($items, $key) {
+			#區域總計
+			$temp['areaName'] 	= $items->pluck('areaName')->get(0);
+			$temp['shopCount']	= $items->pluck('shopId')->unique()->count(); #店家數
+			
+			#因補全門店會有key=0
+			$temp['products']  	= $items->groupBy('productId')->map(function($items, $key){
+				$price 		= $items->pluck('price')->first();
+				$discount 	= $items->sum('discount');
+				
+				$temp['totalQty'] 	= $items->sum('qty');
+				$temp['totalAmount']= round($price * $temp['totalQty'] + $discount, 2);
+				
+				return $temp;
+			})->filter(function($item, $key){
+				return $key != 0;
+			})->toArray();
+			
+			return $temp;
+		})->toArray();
+		
+		#這裏是依header
+		$result['total']['areaName']	= '全區合計';
+		$result['total']['shopCount']	= collect($baseData)->pluck('shopId')->unique()->count(); 
+		$result['total']['products'] 	= collect($baseData)->groupBy('productId')->map(function($items, $key){
+			$price 		= $items->pluck('price')->first();
+			$discount 	= $items->sum('discount');
+				
+			$temp['totalQty'] 	= $items->sum('qty');
+			$temp['totalAmount']= round($price * $temp['totalQty'] + $discount, 2);
+			
+			return $temp;
+		})->filter(function($item, $key){
+			return $key != 0;
+		})->toArray();
+		
+		$params->set('area.data', array_filter($result));
+	}
+	
+	/* 店別每日銷售
+	 * @params: array
+	 * @params: int
+	 * @return: array
+	 */
+	public function parsingStore($params)
+	{
+		/* 重整資料格式
+		array:6 [
+			"shopId" => "100001"
+			"storeName" => "御廚中正南昌店"
+			"areaId" => 1
+			"areaName" => null
+			"products" => array:5 [▼
+				2 => array:1 [▼
+					"productId" => 2
+					"productName" => "橙汁排骨"
+					"totalQty" => 15
+					"totalAmount" => 2260.0
+				]...
+			]
+		]
+		*/
+		$params->set('store.header', []);
+		$params->set('store.data', []);
+		$baseData = $params->baseData;
+		
+		#會有無設定區域權限的狀況, 須判別
+		if (empty($baseData))
+			return FALSE;
+		
+		#array_merge key不會保留
+		$header = [
+			'areaName'	=> '區域', 
+			'shopId'	=> 'POS店號',
+			'storeKey'	=> '門店代號', 
+			'storeName' 	=> '門店名稱',
+			'products' 	=> $params->productHeader
+		];
+		
+		$params->set('store.header', $header);
+		
+		$result = collect($baseData)->sortBy('areaId')->groupBy('shopId')->map(function($items, $key) {
+			$temp['storeKey'] 	= $items->pluck('storeKey')->first();
+			$temp['shopId'] 	= $items->pluck('shopId')->first();
+			$temp['storeName'] 	= $items->pluck('storeName')->first();
+			$temp['areaId'] 	= $items->pluck('areaId')->first();
+			$temp['areaName'] 	= $items->pluck('areaName')->first();
+				
+			#因有補全的門店,故會有key=0的狀況	
+			$temp['products'] = $items->groupBy('productId')->map(function($items, $key){
+				$price 		= $items->pluck('price')->first();
+				$discount 	= $items->sum('discount');
+				
+				$temp['totalQty']	= intval($items->sum('qty'));
+				$temp['totalAmount']= round($price * $temp['totalQty'] + $discount, 2);
+				
+				return $temp;
+				
+			})->filter(function($item, $key){
+				return $key != 0;
+			})->toArray();
+			
+			return $temp;	
+		})->values()->all();
+		
+		$params->set('store.data', $result);
+	}
+	
+	/* Export data
+	 * @params: enum
+	 * @params: date
+	 * @params: date
+	 * @return: array
+	 */
+	public function export($sourceData)
+	{
+		try
+		{
+			#Build export data
+			list($export['區域彙總-數量'], $export['區域彙總-金額']) = $this->_buildAreaExport($sourceData['area']);
+			list($export['店別明細-數量'], $export['店別明細-金額']) = $this->_buildStoreExport($sourceData['store']);
+			
+			#Write export to file
+			$brandName = Brand::tryFrom($sourceData['brandId'])->label();
+			$fileName = Str::replaceArray('?', [$brandName, $sourceData['startDate'], $sourceData['endDate']], '?_銷售_?_?.xlsx');
+			$filePath = Storage::disk('export')->path($fileName);
+			
+			$writer = new Writer();
+			$writer->openToFile($filePath);
+			
+			foreach($export as $sheetName => $sheetData)
+			{
+				$sheet = ($sheetName == '區域彙總-數量') ? $writer->getCurrentSheet() : $writer->addNewSheetAndMakeItCurrent();
+				$sheet->setName($sheetName);
+				
+				foreach($sheetData as $data)
+				{
+					$row =  Row::fromValues($data);
+					$writer->addRow($row);
+				}
+			}
+			
+			$writer->close();
+			return ResponseLib::initialize($fileName)->success();
+		}
+		catch(Exception $e)
+		{
+			Log::channel('appServiceLog')->error($e->getMessage(), [ __class__, __function__, __line__]);
+			return ResponseLib::initialize('檔案下載失敗，請重新查詢')->fail();
+		}
+	}
+	
+	/* Build data for export
+	 * @params: array
+	 * @return: array
+	 */
+	private function _buildAreaExport($areaData)
+	{
+		#標頭都相同, 但要產生數量及金額兩個sheets
+		$export['areaQty'] 		= [];
+		$export['areaAmount'] 	= [];
+		
+		$header = Arr::flatten($areaData['header']);
+		
+		#Header相同
+		$export['areaQty'][]	= $header;
+		$export['areaAmount'][] = $header;
+		
+		foreach($areaData['data'] as $areaId => $data)
+		{
+			$rowQty		= [];
+			$rowAmount 	= [];
+			
+			$rowQty[]	 = $data['areaName'];
+			$rowAmount[] = $data['areaName'];
+			
+			$rowQty[]	 = $data['shopCount'];
+			$rowAmount[] = $data['shopCount'];
+			
+			#須依header的順序取資料
+			foreach($areaData['header']['products'] as $productId => $productName)
+			{
+				$rowQty[]	= intval(data_get($data, "products.{$productId}.totalQty", 0));
+				$rowAmount[]= Number::currency(intval(data_get($data, "products.{$productId}.totalAmount", 0)), precision: 0);
+			}
+			
+			$export['areaQty'][]	= $rowQty;
+			$export['areaAmount'][] = $rowAmount;
+		}
+		
+		return [$export['areaQty'], $export['areaAmount']] ;
+	}
+	
+	/* Build data for export
+	 * @params: array
+	 * @return: array
+	 */
+	private function _buildStoreExport($shopData)
+	{
+		#標頭都相同, 但要產生數量及金額兩個sheets
+		$export['shopQty'] 		= [];
+		$export['shopAmount'] 	= [];
+		
+		$header = Arr::flatten($shopData['header']);
+		
+		#Header相同
+		$export['shopQty'][]	= $header;
+		$export['shopAmount'][] = $header;
+		
+		foreach($shopData['data'] as $index => $data)
+		{
+			$rowQty		= [];
+			$rowAmount 	= [];
+			
+			$rowQty[]	= $data['areaName'];
+			$rowQty[]	= $data['shopId'];
+			$rowQty[]	= $data['storeKey'];
+			$rowQty[]	= $data['storeName'];
+			
+			$rowAmount[]= $data['areaName'];
+			$rowAmount[]= $data['shopId'];
+			$rowAmount[]= $data['storeKey'];
+			$rowAmount[]= $data['storeName'];
+			
+			foreach($shopData['header']['products'] as $productId => $productName)
+			{
+				$rowQty[]	= intval(data_get($data, "products.{$productId}.totalQty", 0));
+				$rowAmount[]= Number::currency(intval(data_get($data, "products.{$productId}.totalAmount", 0)), precision: 0);
+			}
+			
+			$export['shopQty'][]	= $rowQty;
+			$export['shopAmount'][] = $rowAmount;
+		}
+		
+		return [$export['shopQty'], $export['shopAmount']] ;
+	}
+}

@@ -1,0 +1,97 @@
+/* New Release Style */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+form {
+	margin-block-start: 0;
+}
+
+#searchPanel {
+	fieldset.product-list {
+		.row:first-of-type {
+			margin-block-start: 0;
+		}
+	}
+}
+
+.page-nav {
+	.field-filter-dark {
+		input {
+			color: #fce4ec;
+		}
+		i {
+			color: #ff80ab;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+	
+/* Data */
+.statistics-list {
+	/* 門市 */
+	.statistics-store {
+		table {
+			thead tr th {
+				&:nth-of-type(1) {
+					width: 100px;
+					min-width: 100px;
+					max-width: 100px;
+					left: 0;
+				}
+				&:nth-of-type(2) {
+					width: 100px;
+					min-width: 100px;
+					max-width: 100px;
+					left: 0;
+				}
+				&:nth-of-type(3) {
+					width: 150px;
+					min-width: 150px;
+					max-width: 150px;
+					left: 0;
+				}
+				&:nth-of-type(4) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+					position: sticky;
+					left: 0;
+					z-index: 6;
+				}
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(1) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(2) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(3) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(4) {
+						position: sticky;
+						z-index: 5;
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+				}
+			}
+			
+		}
+	}
+
+}

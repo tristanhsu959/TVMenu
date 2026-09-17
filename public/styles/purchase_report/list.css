@@ -1,0 +1,185 @@
+/* New Release Style */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+form {
+	margin-block-start: 0;
+}
+
+#searchPanel {
+	.mode-group {
+		.field {
+			margin-block-start: 0;
+			
+			&:first-child {
+				margin-block-start: 1rem;
+			}
+		}
+	}
+}
+
+/* Data */
+.page {
+	/* 門市 */
+	.statistics-store {
+		table {
+			thead tr th {
+				&:nth-of-type(1) {
+					width: 50px;
+					min-width: 50px;
+					max-width: 50px;
+					left: 0;
+				}
+				&:nth-of-type(2) {
+					width: 80px;
+					min-width: 80px;
+					max-width: 80px;
+					left: 0;
+				}
+				&:nth-of-type(3) {
+					width: 180px;
+					min-width: 180px;
+					max-width: 180px;
+					position: sticky;
+					left: 0;
+					z-index: 6;
+				}
+				&:nth-of-type(4) {
+					width: 120px;
+					min-width: 120px;
+					max-width: 120px;
+					position: sticky;
+					left: 180px;
+					z-index: 6;
+				}
+				&:nth-of-type(5) {
+					width: 100px;
+					min-width: 100px;
+					max-width: 100px;
+					left: 0;
+				}
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(1) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(2) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(3) {
+						position: sticky;
+						z-index: 5;
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(4) {
+						position: sticky;
+						z-index: 5;
+						left: 180px;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+					&:nth-of-type(5) {
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+				}
+			}
+			
+		}
+	}
+
+}
+
+/* 員購公關 statistics-store:才能套用共用style */
+.employee-pr-list {
+	.statistics-table { 
+		table {
+			thead tr th {
+				&:nth-of-type(3) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+					position: sticky;
+					left: 0;
+					z-index: 7; /* 提升一級,避免吃到default z-index=5 */
+				}
+				&:nth-of-type(10) {
+					width: 260px;
+					min-width: 260px;
+					max-width: 260px;
+				}
+				
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(3) {
+						position: sticky;
+						z-index: 6;
+						left: 0;
+					}
+					
+				}
+				
+				&.order-header.employee td {
+					background-color: #e3f2fd;
+					color: #1e88e5;
+					font-weight: 500;
+				}
+				
+				&.order-header.pr td {
+					background-color: #f3e5f5;
+					color: #8e24aa;
+					font-weight: 500;
+				}
+			}
+			
+		}
+	}
+}
+
+/* 追加 statistics-store:才能套用共用style */
+.extra-order-list {
+	.statistics-table { 
+		table {
+			thead tr th {
+				&:nth-of-type(3) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+					position: sticky;
+					left: 0;
+					z-index: 7; /* 提升一級,避免吃到default z-index=5 */
+				}
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(3) {
+						position: sticky;
+						z-index: 6;
+						left: 0;
+						background-color: var(--surface);
+					}
+				}
+				
+				&.order-header td {
+					background-color: #fce4ec;
+					color: #d81b60;
+					font-weight: 500;
+				}
+			}
+			
+		}
+	}
+}

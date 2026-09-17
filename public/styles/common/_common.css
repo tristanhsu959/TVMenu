@@ -1,0 +1,70 @@
+/* Web Common Style */
+
+/* Common field padding */
+#searchPanel {
+	max-width: 400px;
+	.field {
+		margin-block-start: 1rem;
+	}
+}
+
+/* Toast Message */
+#notifyMsg {
+	--error: #f44336;
+	width: 35%;
+	display: flex;
+	justify-content: space-between;
+	a i {
+		color: #fff;
+	}
+}
+
+/* Dialog */
+#alertModal, #confirmModal {
+	h5 {
+		display: flex;
+		align-items: center;
+		color: #f44336;
+		margin-bottom: 1rem;
+	}
+}
+
+/* nav.scroll a {
+  position: static !important; /* 讓 tooltip 跳出 a 標籤的限制 *
+}
+
+nav.scroll .tooltip {
+  margin-top: 40px; /* 手動修正彈出提示的向下位移距離，避免重疊 *
+} */
+
+/* nav.tabs.scroll::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera *
+}
+nav.tabs.scroll {
+	-ms-overflow-style: none;  /* IE and Edge *
+	scrollbar-width: none;  /* Firefox *
+} */
+
+/* Width control */
+.w20 {
+	width: calc((100% - 4rem) / 5);
+}
+.w25 {
+	width: calc((100% - 3rem) / 4);
+}
+.w30 {
+	width: calc((100% - 2rem) / 3);
+}
+.w40 {
+	width: calc((100% - 2rem) / 5 * 2);
+}
+.w50 {
+	width: calc((100% - 1rem) / 2);
+}
+.w75 {
+	width: calc((100% - 1rem) / 4 * 3);
+}
+.w100 {
+	width: 100%;
+}
+

@@ -1,0 +1,105 @@
+/* New Release Style */
+body main.app {
+	overflow-y: hidden !important;
+}
+
+form {
+	margin-block-start: 0;
+}
+
+#searchPanel {
+	
+}
+
+.page-nav {
+	.field-filter-dark {
+		input {
+			color: #fce4ec;
+		}
+		i {
+			color: #ff80ab;
+			&:hover {
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+	
+/* Data */
+#tab-product.page, #tab-preorder.page {
+	/* Product */
+	.statistics-table {
+		table {
+			thead tr th {
+				&:nth-of-type(1) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+					position: sticky;
+					left: 0;
+					z-index: 6;
+				}
+				&:nth-of-type(8) {
+					width: 160px;
+					min-width: 160px;
+					max-width: 160px;
+				}
+				&:nth-of-type(10) {
+					width: 280px;
+					min-width: 280px;
+					max-width: 280px;
+				}
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(1) {
+						position: sticky;
+						z-index: 5;
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+				}
+			}
+			
+		}
+	}
+}
+
+#tab-supplier.page {
+	/* Product */
+	.statistics-table {
+		table {
+			thead tr th {
+				&:nth-of-type(1) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+					position: sticky;
+					left: 0;
+					z-index: 6;
+				}
+				&:nth-of-type(5) {
+					width: 200px;
+					min-width: 200px;
+					max-width: 200px;
+				}
+			}
+			
+			tbody tr {
+				td {
+					&:nth-of-type(1) {
+						position: sticky;
+						z-index: 5;
+						left: 0;
+						background-color: var(--table-fixed-bg);
+						color: var(--table-fixed-color);
+					}
+				}
+			}
+			
+		}
+	}
+}
