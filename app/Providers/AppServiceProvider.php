@@ -33,22 +33,9 @@ class AppServiceProvider extends ServiceProvider
 			return $app->build(StoreManager::class);
 		});
 		
-		$this->app->singleton(PosManager::class, function ($app) {
-			return $app->build(PosManager::class);
-		});
-		
 		$this->app->singleton(PurchaseManager::class, function ($app) {
 			return $app->build(PurchaseManager::class);
 		});
-		
-		$this->app->singleton(LocalLegacyManager::class, function ($app) {
-			return $app->build(LocalLegacyManager::class);
-		});
-		
-		/* $this->app->singleton(LegacyManager::class, function ($app) {
-			return $app->build(LegacyManager::class);
-		}); */
-
     }
 
     /**
@@ -57,28 +44,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 		
-        #20251128 Tristan: DB Collection to Assoc Array
+        #Tristan: DB Collection to Assoc Array
 		Event::listen(StatementPrepared::class, function ($event) {
 			$event->statement->setFetchMode(PDO::FETCH_ASSOC);
 		});
-		
-		#Webcomm oidc
-		Event::listen(SocialiteWasCalled::class, function (SocialiteWasCalled $event) {
-            $event->extendSocialite('webcomm', WebcommProvider::class);
-        });
-		
-		#View share not work, because session is not available
-		#Deprecated
-		/*View::composer('*', function ($view) {
-			
-			if (in_array($view->getName(), ['signin']) == FALSE)
-			{				
-				$signinInfo = $this->getSigninUserInfo();
-				$appMenu = new MenuViewModel($this->getAuthorizedMenu());
-				
-				if ($signinInfo) 
-					$view->with('signinInfo', $signinInfo)->with('appMenu', $appMenu);
-			}
-		});*/
     }
 }
