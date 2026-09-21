@@ -3,18 +3,29 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\AuthController;
+use App\Http\Middleware\Api\AccessMiddleware;
 
 Route::middleware([AccessMiddleware::class])->group(function(){
-	/***** 新品設定 *****/
-	Route::get('new_release/setting', [NewReleaseSettingController::class, 'list'])->name('new_release_setting');
-	Route::get('new_release/setting/list', [NewReleaseSettingController::class, 'list'])->name('new_release_setting.list');
-	Route::get('new_release/setting/create', [NewReleaseSettingController::class, 'showCreate'])->name('new_release_setting.create');
-	Route::post('new_release/setting/create', [NewReleaseSettingController::class, 'create'])->name('new_release_setting.create.post');
-	Route::get('new_release/setting/update/{id}', [NewReleaseSettingController::class, 'showUpdate'])->name('new_release_setting.update');
-	Route::post('new_release/setting/update', [NewReleaseSettingController::class, 'update'])->name('new_release_setting.update.post');
-	Route::post('new_release/setting/delete/{id}', [NewReleaseSettingController::class, 'delete'])->name('new_release_setting.delete');
-
+	
+	/* Media */
+	Route::get('tvMenu/medias', [MediaController::class, 'list'])->name('media');
+	Route::post('tvMenu/medias', [MediaController::class, 'create'])->name('media.create');
+	Route::get('tvMenu/medias/{id}', [MediaController::class, 'detail'])->name('media.detail');
+	Route::put('tvMenu/medias/{id}', [MediaController::class, 'update'])->name('media.update');
+	Route::delete('tvMenu/medias/{id}', [MediaController::class, 'delete'])->name('media.delete');
+	
+	/* Menu */
+	Route::get('tvMenu/menus', [MenuController::class, 'list'])->name('menu');
+	Route::post('tvMenu/menus', [MenuController::class, 'create'])->name('menu.create');
+	Route::get('tvMenu/menus/{id}', [MenuController::class, 'detail'])->name('menu.detail');
+	Route::put('tvMenu/menus/{id}', [MenuController::class, 'update'])->name('menu.update');
+	Route::delete('tvMenu/menus/{id}', [MenuController::class, 'delete'])->name('menu.delete');
+	
+	/* Store Menu Mapping */
+	Route::get('tvMenu/stores', [StoreController::class, 'list'])->name('store');
+	Route::get('tvMenu/stores/{id}', [StoreController::class, 'detail'])->name('store.detail');
+	Route::post('tvMenu/stores/{id}', [StoreController::class, 'upsert'])->name('store.upsert'); #insert or update
+	Route::delete('tvMenu/stores/{id}', [StoreController::class, 'delete'])->name('store.delete');
 });
 
 

@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\Brand;
-use App\Enums\Factory;
 
 #Store
 return [
@@ -45,31 +44,5 @@ return [
 		'TP11100152' => 'TP11100071',
 		'TP11200112' => 'TP11200051',
 	],
-	
-	#公關員購StoreId in舊系統
-	'employee'=> [
-		Brand::BAFANG->value => [
-			Factory::TP->value => '1000',
-			Factory::KH->value => '1100000' #KH
-		],
-		
-		Brand::BUYGOOD->value => [
-			Factory::RL->value => '1002', #RL
-			Factory::TS->value => '1003' #TS
-		],
-	],
-	
-	'pr'=> [
-		Brand::BAFANG->value => [
-			Factory::TP->value => '1001', #TP
-			Factory::KH->value => '1100100' #KH
-		],
-		
-		Brand::BUYGOOD->value => [
-			Factory::RL->value => '1001', #RL
-			Factory::TS->value => '1001' #TS
-		],
-	],
-	
 	
 ];
