@@ -34,11 +34,11 @@ return [
 		#TV Menu
 		'TVMenu' => [
             'driver' => 'sqlsrv',
-            'host' => env('QO_DB_HOST', 'bafangquickorder-mssql-uat-server.database.windows.net'),
-			'port' => env('QO_DB_PORT', '1433'),
-            'database' => env('QO_DB_DATABASE', 'TVMenu'),
-            'username' => env('QO_DB_USERNAME', 'bafangquickorder-mssql-uat-server-admin'),
-            'password' => env('QO_DB_PASSWORD', ''),
+            'host' => env('TV_DB_HOST', 'bafangquickorder-mssql-uat-server.database.windows.net'),
+			'port' => env('TV_DB_PORT', '1433'),
+            'database' => env('TV_DB_DATABASE', 'TVMenu'),
+            'username' => env('TV_DB_USERNAME', 'bafangquickorder-mssql-uat-server-admin'),
+            'password' => env('TV_DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
@@ -56,7 +56,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'trust_server_certificate' => env('NO_DB_TRUST_SERVER_CERTIFICATE', 'false'),
+            'trust_server_certificate' => env('QO_DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 		
 		'NewOrder' => [

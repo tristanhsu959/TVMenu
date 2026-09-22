@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\Api\AccessMiddleware;
+use App\Http\Controllers\Api\MediaController;
 
 Route::middleware([AccessMiddleware::class])->group(function(){
 	

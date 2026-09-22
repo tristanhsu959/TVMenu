@@ -29,7 +29,16 @@ return [
     */
 
     'disks' => [
-
+		
+		'tvMenu' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/tvMenu'),
+            'url' => env('APP_URL').'/storage/tvMenu',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+		
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),

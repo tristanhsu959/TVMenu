@@ -35,7 +35,7 @@
 	</head>
 
 	<body x-cloak>
-		<main class="responsive">
+		<main class="">
 			@yield('content')
 		</main>
 	</body>

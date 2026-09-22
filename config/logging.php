@@ -53,22 +53,31 @@ return [
     'channels' => [
 		
 		/********** User Define **********/
-		#後端呼叫記錄用
-		'apiServerLog' => [
+		#Media
+		'apiMediaLog' => [
 			'driver' => 'daily',
 			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
-			'path' => storage_path('logs/apiServer.log'),
+			'path' => storage_path('logs/apiMedia.log'),
 		],
-		#TV呼叫記錄用
-		'apiClientLog' => [
+		#menu
+		'apiMenuLog' => [
 			'driver' => 'daily',
 			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
-			'path' => storage_path('logs/apiClient.log'),
+			'path' => storage_path('logs/apiMenu.log'),
 		],
+		#Store Menu
+		'apiStoreLog' => [
+			'driver' => 'daily',
+			'days' => 7,
+			#'channels' => ['daily'],
+			'ignore_exceptions' => false,
+			'path' => storage_path('logs/apiStore.log'),
+		],
+		
 		'commandLog' => [
 			'driver' => 'daily',
 			'days' => 7,

@@ -1,0 +1,14 @@
+/* App Common Style */
+
+main .content-wrapper{
+	width: 100%;
+	
+	details {
+		article {
+			.field {
+				margin-block-start: 0 !important;
+				margin-right: 1rem;
+			}
+		}
+	}
+}

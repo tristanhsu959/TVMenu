@@ -24,18 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // 綁定單例
-		$this->app->singleton(AppManager::class, function ($app) {
-			return new \App\Manager\AppManager();
-		});
-		
-		$this->app->singleton(StoreManager::class, function ($app) {
-			return $app->build(StoreManager::class);
-		});
-		
-		$this->app->singleton(PurchaseManager::class, function ($app) {
-			return $app->build(PurchaseManager::class);
-		});
     }
 
     /**

@@ -2,21 +2,44 @@
 
 namespace App\Repositories;
 
-use App\Facades\PurchaseManager;
-use App\Libraries\Sales\AreaLib;
-use App\Enums\OpCenter;
-use App\Enums\Brand;
-use App\Enums\Factory;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
 
-class EzOrderPosRepository extends Repository
+class MediaRepository extends Repository
 {
 	public function __construct()
 	{
 		
+	}
+	
+	/* Create media
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function insert($formData)
+	{
+		try
+		{
+			$data['name']		= $formData->mediaName;
+			$data['path'] 		= $formData->path;
+			$data['startDate']	= $formData->stDate;
+			$data['endDate']	= $formData->endDate;
+			$data['type']		= $formData->type;
+			$data['enabled']	= $formData->enabled;
+			
+			$db = $this->connectTvMenu();
+			
+			$insertId = $db->table('Medias')
+						->insertGetId($data);
+		
+			return $insertId;
+		}
+		catch(Exception $e)
+		{
+			throw new Exception('媒體庫新增資料失敗');
+		}
 	}
 	
 	/* 取營收資料 SALE00(sd_sale00沒有全部,故不取此table)
