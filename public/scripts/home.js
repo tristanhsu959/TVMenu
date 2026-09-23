@@ -41,6 +41,18 @@ document.addEventListener('alpine:init', () => {
 			console.log(response);
 		},
 		
+		async listMedia() {
+			const formData = new FormData();
+            
+            const response = await axios.get('/api/tvMenu/medias', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+			});
+			
+			console.log(response);
+		},
+		
     }));
 });
 

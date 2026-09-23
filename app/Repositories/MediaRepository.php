@@ -14,20 +14,42 @@ class MediaRepository extends Repository
 		
 	}
 	
+	/* Get media list
+	 * @params: string
+	 * @params: string
+	 * @params: string
+	 * @return: array
+	 */
+	public function getList($request = NULL)
+	{
+		$db = $this->connectTvMenu();
+		
+		$result = $db
+			->table('Medias')
+			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
+			/* ->when(empty($request), function ($query) use ($excepts) {
+					$query->whereNotIn('o.posid', $excepts);
+			}) */
+			->get()
+			->toArray();
+		
+		return $result;
+	}
+	
 	/* Create media
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function insert($formData)
+	public function insert($request)
 	{
 		try
 		{
-			$data['name']		= $formData->mediaName;
-			$data['path'] 		= $formData->path;
-			$data['startDate']	= $formData->stDate;
-			$data['endDate']	= $formData->endDate;
-			$data['type']		= $formData->type;
-			$data['enabled']	= $formData->enabled;
+			$data['name']		= $request->mediaName;
+			$data['path'] 		= $request->path;
+			$data['startDate']	= $request->stDate;
+			$data['endDate']	= $request->endDate;
+			$data['type']		= $request->type;
+			$data['enabled']	= $request->enabled;
 			
 			$db = $this->connectTvMenu();
 			
@@ -42,133 +64,25 @@ class MediaRepository extends Repository
 		}
 	}
 	
-	/* 取營收資料 SALE00(sd_sale00沒有全部,故不取此table)
-	 * @params: enums
-	 * @params: datetime
-	 * @params: datetime
-	 * @params: array
-	 * @params: array
-	 * @return: array
+	/* Remove media
+	 * @params: fluent
+	 * @return: boolean
 	 */
-	public function getDataFromPos($brand, $stDate, $endDate, $areaIds, $posIds)
+	public function remove($id)
 	{
-		$brandId = $brand->value;
-		$excepts = config("web.sales.shop.except.{$brandId}");
+		try
+		{
+			$db = $this->connectTvMenu();
+			
+			$db->table('Medias')
+				->where('_id', '=', $id)
+				->delete();
 		
-		if ($brand == Brand::BAFANG)
-			$db = $this->connectBFPosErp();
-		else if ($brand == Brand::BUYGOOD)
-			$db = $this->connectBGPosErp();
-		else
-			return [];
-		
-		$authAreaIds = AreaLib::toSalesAreaId($brand, $areaIds);
-		
-		$result = $db
-				->table(DB::raw('SALE00 as a WITH(NOLOCK)'))
-				->join(DB::raw('SHOP00 as s WITH(NOLOCK)'), 's.SHOP_ID', 'a.SHOP_ID')
-				->where('a.SALE_DATE', '>=', $stDate)
-				->where('a.SALE_DATE', '<', $endDate)
-				->where('a.STATUS', '=', 2) #3:作廢不計入
-				->when(! empty($authAreaIds), function ($query) use ($authAreaIds) {
-					$query->whereIn('s.gid', $authAreaIds);
-				})
-				->when(! empty($posIds), function ($query) use ($posIds) {
-					$query->whereIn('a.SHOP_ID', $posIds);
-				})
-				->whereNotIn('a.SHOP_ID', $excepts)
-				->select('a.SHOP_ID as shopId')
-				->selectRaw('count(a.SHOP_ID) as orderCount')
-				->selectRaw('sum(a.amount) as amount')
-				->selectRaw('sum(a.TOT_SALES) as totalSales')
-				->selectRaw('sum(a.TOT_EXTRA) as totalExtra')
-				->selectRaw('sum(a.TOT_DISCHARGE) as totalDischarge')
-				->selectRaw('count(distinct CAST(a.SALE_DATE AS DATE)) as businessDays')
-				->groupBy('a.SHOP_ID')#->ddRawSql();
-				->get()
-				->toArray();
-		
-		return $result; 
-	}
-	
-	/* 只八方點時, 需從POS取營業天數
-	 * @params: enums
-	 * @params: datetime
-	 * @params: datetime
-	 * @params: array
-	 * @params: array
-	 * @return: array
-	 */
-	public function getBusinessDays($brand, $stDate, $endDate, $areaIds, $posIds)
-	{
-		$brandId = $brand->value;
-		$excepts = config("web.sales.shop.except.{$brandId}");
-		
-		if ($brand == Brand::BAFANG)
-			$db = $this->connectBFPosErp();
-		else if ($brand == Brand::BUYGOOD)
-			$db = $this->connectBGPosErp();
-		else
-			return [];
-		
-		$authAreaIds = AreaLib::toSalesAreaId($brand, $areaIds);
-		
-		$result = $db
-				->table(DB::raw('SALE00 as a WITH(NOLOCK)'))
-				->join(DB::raw('SHOP00 as s WITH(NOLOCK)'), 's.SHOP_ID', 'a.SHOP_ID')
-				->where('a.SALE_DATE', '>=', $stDate)
-				->where('a.SALE_DATE', '<', $endDate)
-				->where('a.STATUS', '=', 2) #3:作廢不計入
-				->when(! empty($authAreaIds), function ($query) use ($authAreaIds) {
-					$query->whereIn('s.gid', $authAreaIds);
-				})
-				->when(! empty($posIds), function ($query) use ($posIds) {
-					$query->whereIn('a.SHOP_ID', $posIds);
-				})
-				->whereNotIn('a.SHOP_ID', $excepts)
-				->select('a.SHOP_ID as shopId')
-				->selectRaw('count(distinct CAST(a.SALE_DATE AS DATE)) as businessDays')
-				->groupBy('a.SHOP_ID')#->ddRawSql();
-				->get()
-				->toArray();
-		
-		return $result; 
-	}
-	
-	/* 取Product setting
-	 * @params: string
-	 * @params: string
-	 * @params: string
-	 * @return: array
-	 */
-	public function getDataFromEzOrder($brand, $stDate, $endDate, $posIds)
-	{
-		$brandId 	= $brand->value;
-		$brandCode 	= config("web.ezorder.store.code.{$brandId}"); #八方點的code
-		$excepts 	= array_merge(config("web.ezorder.store.factoryStore.{$brandId}"), config("web.ezorder.store.except.{$brandId}"));
-		
-		$db = $this->connectQuickOrder();
-		
-		$result = $db
-			->table(DB::raw('[Orders] as o WITH(NOLOCK)'))
-			->join('Stores as s', 's.storeId', '=', 'o.storeId')
-			->select('o.storeId as storeKey')
-			->selectRaw('count(o.storeId) as orderCount, sum(o.price) as amount')
-			->where('o.time', '>=', $stDate)
-			->where('o.time', '<', $endDate)
-			->where('o.isComplete', '=', 1)
-			->where('o.isRefund', '=', 0)
-			->where('s.brand', '=', $brandCode)
-			->when(empty($posIds), function ($query) use ($excepts) {
-					$query->whereNotIn('o.posid', $excepts);
-			})
-			->when(! empty($posIds), function ($query) use ($posIds) {
-					$query->whereIn('o.posid', $posIds);
-			})
-			->groupBy('o.storeId')#->ddRawSql();
-			->get()
-			->toArray();
-		
-		return $result;
+			return TRUE;
+		}
+		catch(Exception $e)
+		{
+			throw new Exception('媒體庫刪除資料失敗');
+		}
 	}
 }

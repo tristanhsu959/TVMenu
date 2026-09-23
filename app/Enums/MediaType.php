@@ -13,6 +13,7 @@ enum MediaType : int
 		{
 			self::IMAGE		=> '圖片',
 			self::VIDEO		=> '影片',
+			default			=> ''
 		};
     }
 	
