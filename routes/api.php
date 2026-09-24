@@ -11,6 +11,7 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	
 	/* Media */
 	Route::get('tvMenu/medias', [MediaController::class, 'list'])->name('media');
+	Route::get('tvMenu/medias/active', [MediaController::class, 'activeList'])->name('media.active');
 	Route::post('tvMenu/medias', [MediaController::class, 'create'])->name('media.create');
 	Route::get('tvMenu/medias/{id}', [MediaController::class, 'detail'])->name('media.detail');
 	Route::put('tvMenu/medias/{id}', [MediaController::class, 'update'])->name('media.update');

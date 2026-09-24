@@ -14,7 +14,28 @@ class MenuRepository extends Repository
 		
 	}
 	
-	/* Get media list
+	/* Reset all menu default value
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function resetDefault()
+	{
+		try
+		{
+			$data['isDefault'] = FALSE;
+			
+			$db = $this->connectTvMenu();
+			$db->table('Menus')->update($data);
+		
+			return TRUE;
+		}
+		catch(Exception $e)
+		{
+			throw new Exception('重置預設Menu失敗');
+		}
+	}
+	
+	/* Get menu list
 	 * @params: fluent
 	 * @return: array
 	 */
@@ -34,35 +55,73 @@ class MenuRepository extends Repository
 		return $result;
 	}
 	
-	/* Create media
+	/* Create menu
 	 * @params: fluent
 	 * @return: boolean
 	 */
 	public function insert($request)
 	{
-		try
-		{
-			$data['name']		= $request->mediaName;
-			$data['path'] 		= $request->path;
-			$data['startDate']	= $request->stDate;
-			$data['endDate']	= $request->endDate;
-			$data['type']		= $request->type;
-			$data['enabled']	= $request->enabled;
-			
-			$db = $this->connectTvMenu();
-			
-			$insertId = $db->table('Menus')
-						->insertGetId($data);
+		$db = $this->connectTvMenu();
+		$db->beginTransaction();
 		
-			return $insertId;
-		}
-		catch(Exception $e)
+		try 
 		{
-			throw new Exception('媒體庫新增資料失敗');
+			$insertId = $this->_insertMenu($db, $request->menuName, $request->isDefault);
+			
+			$this->_insertDetail($db, $insertId, $request->medias);
+			
+			$db->commit();
+
+			return TRUE;
+		} 
+		catch (Exception $e) 
+		{
+			$db->rollBack();
+			throw new Exception($e->getMessage());
 		}
+		
+		return TRUE;
 	}
 	
-	/* Get media by id
+	/* Create menu
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function _insertMenu($db, $menuName, $isDefault)
+	{
+		$data['menuName']	= $menuName;
+		$data['isDefault'] 	= boolval($isDefault);
+			
+		$insertId = $db->table('Menus')
+						->insertGetId($data);
+		
+		return $insertId;
+	}
+	
+	/* Create menu details
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function _insertDetail($db, $menuId, $medias)
+	{
+		$data = [];
+		
+		foreach($medias as $media)
+		{
+			$row['menuId']		= $menuId;
+			$row['mediaId'] 	= $media['id'];
+			$row['duration'] 	= empty($media['duration']) ? 5 : intval($media['duration']);
+			$row['sort'] 		= intval($media['sort']);
+			
+			$data[] = $row;
+		}
+			
+		$db->table('MenuDetail')->insert($data);
+		
+		return TRUE;
+	}
+	
+	/* Get menu by id
 	 * @params: fluent
 	 * @return: array
 	 */
@@ -71,42 +130,74 @@ class MenuRepository extends Repository
 		$db = $this->connectTvMenu();
 		
 		$result = $db
-			->table('Menus')
-			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
-			->where('_id', '=', $id)
+			->table('Menus as m')
+			->leftJoin('MenuDetail as d', 'd.menuId', '=', 'm._id')
+			->select('m._id', 'm.menuName', 'm.isDefault')
+			->addSelect('d.mediaId', 'd.duration', 'd.sort')
+			->where('m._id', '=', $id)
 			->get()
-			->first();
+			->toArray();
 		
 		return $result;
 	}
 	
-	/* Update media
+	/* Update menu
 	 * @params: fluent
 	 * @return: boolean
 	 */
 	public function update($request)
 	{
-		try
-		{
-			if (! empty($request->mediaName))
-				$data['name']		= $request->mediaName;
-			
-			$data['startDate']	= $request->stDate;
-			$data['endDate']	= $request->endDate;
-			$data['enabled']	= $request->enabled;
-			
-			$db = $this->connectTvMenu();
-			
-			$db->table('Menus')
-					->where('_id', '=', $request->id)
-					->update($data);
+		$db = $this->connectTvMenu();
+		$db->beginTransaction();
 		
-			return TRUE;
-		}
-		catch(Exception $e)
+		try 
 		{
-			throw new Exception('媒體庫新增資料失敗');
+			$this->_updateMenu($db, $request->id, $request->menuName, $request->isDefault);
+			
+			$this->_removeDetailByMenuId($db, $request->id);
+			
+			$this->_insertDetail($db, $request->id, $request->medias);
+			
+			$db->commit();
+
+			return TRUE;
+		} 
+		catch (Exception $e) 
+		{
+			$db->rollBack();
+			throw new Exception($e->getMessage());
 		}
+		
+		return TRUE;
+	}
+	
+	/* Update menu
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function _updateMenu($db, $id, $menuName, $isDefault)
+	{
+		$data['menuName']	= $menuName;
+		$data['isDefault'] 	= $isDefault;
+			
+		$db->table('Menus')
+			->where('_id', '=', $id)
+			->update($data);
+		
+		return TRUE;
+	}
+	
+	/* Update menu details
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function _removeDetailByMenuId($db, $menuId)
+	{
+		$db->table('MenuDetail')
+			->where('menuId', '=', $menuId)
+			->delete();
+		
+		return TRUE;
 	}
 	
 	/* Remove media
@@ -115,19 +206,29 @@ class MenuRepository extends Repository
 	 */
 	public function remove($id)
 	{
-		try
+		$db = $this->connectTvMenu();
+		$db->beginTransaction();
+		
+		try 
 		{
-			$db = $this->connectTvMenu();
-			
 			$db->table('Menus')
 				->where('_id', '=', $id)
 				->delete();
-		
+			
+			$db->table('MenuDetail')
+				->where('menuId', '=', $id)
+				->delete();
+				
+			$db->commit();
+
 			return TRUE;
-		}
-		catch(Exception $e)
+		} 
+		catch (Exception $e) 
 		{
-			throw new Exception('媒體庫刪除資料失敗');
+			$db->rollBack();
+			throw new Exception($e->getMessage());
 		}
+		
+		return TRUE;
 	}
 }

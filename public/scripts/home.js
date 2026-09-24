@@ -28,6 +28,12 @@ document.addEventListener('alpine:init', () => {
             const response = await axios.get('/api/tvMenu/medias');
 		},
 		
+		async activeMedia() {
+			/* const formData = new FormData(); */
+            
+            const response = await axios.get('/api/tvMenu/medias/active');
+		},
+		
 		async createMedia() {
 			const formData = new FormData();
 			
@@ -66,7 +72,26 @@ document.addEventListener('alpine:init', () => {
 		
     }));
 	
+	/* {
+	"menuName": "八方Menu",
+	"isDefault": true,
+	"medias": [
+		{
+			"id": 1,
+			"duration": 15,
+			"sort": 1
+		},
+		{
+			"id": 2,
+			"duration": 30,
+			"sort": 2
+		}
+	]
+	} 
+*/
+
 	Alpine.data('menuForm', () => ({
+		id: 0,
 		mockPayload: '',
 		
 		init() {
@@ -96,6 +121,12 @@ document.addEventListener('alpine:init', () => {
 			};	 */
 			/* const formData = JSON.parse(this.mockPayload); */
 			/* console.log(JSON.parse(this.mockPayload)); */
+			if (this.mockPayload == '')
+			{
+				console.log('No payload');
+				return true;
+			}
+			
             const response = await axios.post('/api/tvMenu/menus', JSON.parse(this.mockPayload), {
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,20 +136,26 @@ document.addEventListener('alpine:init', () => {
 			console.log(response);
 		},
 		
-		async editMedia() {
-			const response = await axios.get(`/api/tvMenu/menus/${this.formData.id}`);
+		async editMenu() {
+			const response = await axios.get(`/api/tvMenu/menus/${this.id}`);
 			
 			console.log(response);
 		},
 		
-		async updateMedia() {
+		async updateMenu() {
 			
-            const response = await axios.put(`/api/tvMenu/menus/${this.formData.id}`, this.formData);
+			if (this.mockPayload == '')
+			{
+				console.log('No payload');
+				return true;
+			}
+			
+            const response = await axios.put(`/api/tvMenu/menus/${this.id}`, JSON.parse(this.mockPayload));
 		},
 		
-		async deleteMedia() {
+		async deleteMenu() {
 			
-            const response = await axios.delete(`/api/tvMenu/menus/${this.formData.id}`);
+            const response = await axios.delete(`/api/tvMenu/menus/${this.id}`);
 		},
 		
     }));

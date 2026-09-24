@@ -40,26 +40,18 @@ class MediaRepository extends Repository
 	 */
 	public function insert($request)
 	{
-		try
-		{
-			$data['name']		= $request->mediaName;
-			$data['path'] 		= $request->path;
-			$data['startDate']	= $request->stDate;
-			$data['endDate']	= $request->endDate;
-			$data['type']		= $request->type;
-			$data['enabled']	= $request->enabled;
-			
-			$db = $this->connectTvMenu();
-			
-			$insertId = $db->table('Medias')
-						->insertGetId($data);
+		$data['name']		= $request->mediaName;
+		$data['path'] 		= $request->path;
+		$data['startDate']	= $request->stDate;
+		$data['endDate']	= $request->endDate;
+		$data['type']		= $request->type;
+		$data['enabled']	= $request->enabled;
 		
-			return $insertId;
-		}
-		catch(Exception $e)
-		{
-			throw new Exception('媒體庫新增資料失敗');
-		}
+		$db = $this->connectTvMenu();
+		
+		$insertId = $db->table('Medias')->insertGetId($data);
+		
+		return $insertId;
 	}
 	
 	/* Get media by id
@@ -86,27 +78,20 @@ class MediaRepository extends Repository
 	 */
 	public function update($request)
 	{
-		try
-		{
-			if (! empty($request->mediaName))
-				$data['name']		= $request->mediaName;
-			
-			$data['startDate']	= $request->stDate;
-			$data['endDate']	= $request->endDate;
-			$data['enabled']	= $request->enabled;
-			
-			$db = $this->connectTvMenu();
-			
-			$db->table('Medias')
-					->where('_id', '=', $request->id)
-					->update($data);
+		if (! empty($request->mediaName))
+			$data['name']		= $request->mediaName;
 		
-			return TRUE;
-		}
-		catch(Exception $e)
-		{
-			throw new Exception('媒體庫新增資料失敗');
-		}
+		$data['startDate']	= $request->stDate;
+		$data['endDate']	= $request->endDate;
+		$data['enabled']	= $request->enabled;
+		
+		$db = $this->connectTvMenu();
+		
+		$db->table('Medias')
+				->where('_id', '=', $request->id)
+				->update($data);
+		
+		return TRUE;		
 	}
 	
 	/* Remove media
@@ -115,19 +100,12 @@ class MediaRepository extends Repository
 	 */
 	public function remove($id)
 	{
-		try
-		{
-			$db = $this->connectTvMenu();
+		$db = $this->connectTvMenu();
 			
-			$db->table('Medias')
-				->where('_id', '=', $id)
-				->delete();
+		$db->table('Medias')
+			->where('_id', '=', $id)
+			->delete();
 		
-			return TRUE;
-		}
-		catch(Exception $e)
-		{
-			throw new Exception('媒體庫刪除資料失敗');
-		}
+		return TRUE;
 	}
 }

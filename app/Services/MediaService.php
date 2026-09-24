@@ -25,7 +25,7 @@ class MediaService
 	}
 	
 	/* ====================== List ====================== */
-	/* Create medias
+	/* Get medias
 	 * @params: clone fluent
 	 * @return: array
 	 */
@@ -51,10 +51,11 @@ class MediaService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('讀取媒體庫清單失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('media.list', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('media.list[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -109,10 +110,11 @@ class MediaService
 			$this->_removeMedia($request->id, $request->path);
 			
 			#Api要call get()直接回傳
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('媒體庫新增失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('media.create', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('media.create[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -147,10 +149,11 @@ class MediaService
 		catch(Exception $e)
 		{
 			#Api要call get()直接回傳
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('讀取媒體庫設定失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('media.detail', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('media.detail[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -185,10 +188,11 @@ class MediaService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('媒體庫更新失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('media.update', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('media.update[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -229,10 +233,11 @@ class MediaService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('媒體庫刪除失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('media.delete', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('media.update[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}

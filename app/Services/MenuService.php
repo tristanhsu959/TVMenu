@@ -24,7 +24,7 @@ class MenuService
 	}
 	
 	/* ====================== List ====================== */
-	/* Create medias
+	/* Get menus
 	 * @params: clone fluent
 	 * @return: array
 	 */
@@ -44,16 +44,17 @@ class MenuService
 			$response = ResponseLib::initialize($list)->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('media.list', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('menu.list', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('讀取Menu清單失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('media.list', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.list', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.list[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -67,16 +68,18 @@ class MenuService
 	{
 		$data = collect($list)->map(function($item, $key){
 			
-			$item = $this->_buildMetaData($item['_id'], $item['menuName'], $item['isDefault']);
+			$temp['id'] 		= $item['_id'];
+			$temp['menuName'] 	= $item['menuName'];
+			$temp['isDefault'] 	= boolval($item['isDefault']);
 			
-			return $item;
+			return $temp;
 		})->toArray();
 		
 		return $data;
 	}
 	
 	/* ====================== Create ====================== */
-	/* Create medias
+	/* Create menu
 	 * @params: clone fluent
 	 * @return: array
 	 */
@@ -85,77 +88,110 @@ class MenuService
 		try
 		{
 			$this->_log->request = $request->toArray();
-			dd($this->_log);
-			#1.Save media file
-			$this->_processMediaFile($request);
+			
+			#1.Check default setting
+			$this->_resetDefault($request);
 			
 			#2.Insert to db
 			$request->id = $this->_repository->insert($request);
 			
-			#3.Build response
-			$metaData = $this->_buildMetaData($request->id, $request->mediaName, $request->path, $request->stDate, $request->endDate, $request->type, $request->enabled);
-			
-			#4.Return response
-			$response = ResponseLib::initialize($metaData)->success()->get();
+			#3.Return response
+			$response = ResponseLib::initialize()->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('media.create', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('menu.create', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			$this->_removeMedia($request->id, $request->path);
-			
 			#Api要call get()直接回傳
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('新增Menu失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('media.create', $this->_log->toArray());
+			
+			Log::channel($this->_logChannel)->error('menu.create', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.create[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
 	}
 	
 	
-	/* ====================== Get media ====================== */
-	/* Get medias by id
+	/* ====================== Get menu ====================== */
+	/* Get menu by id
 	 * @params: int
 	 * @return: array
 	 */
-	public function getMedia($id)
+	public function getMenu($id)
 	{
 		try
 		{
 			$this->_log->request = $id;
 			
-			#1.get media
-			$media = $this->_repository->getById($id);
+			#1.get menu & detail
+			$menu = $this->_repository->getById($id);
 			
 			#2.Build response
-			$metaData = $this->_buildMetaData($media['_id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
+			$output = $this->_buildMenu($menu);
 			
 			#3.Return response
-			$response = ResponseLib::initialize($metaData)->success()->get();
+			$response = ResponseLib::initialize($output)->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('media.detail', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('menu.detail', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			#Api要call get()直接回傳
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('讀取Menu設定失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('media.detail', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.detail', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.detail[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
 	}
 	
-	/* Update medias
+	/* Build response data for return
+	 * @params: 
+	 * @return: array
+	 */
+	private function _buildMenu($menu)
+	{
+		/* id: integer,
+		menuName: string,
+		isDefault: boolean,
+		medias:[
+			{
+				id: integer,
+				duration: integer,
+				sort: integer
+			}, ......
+		] */
+		$menu = collect($menu);
+		
+		$output['id'] 			= $menu->pluck('_id')->first();
+		$output['menuName'] 	= $menu->pluck('menuName')->first();
+		$output['isDefault'] 	= boolval($menu->pluck('isDefault')->first());
+		
+		
+		$medias = $menu->map(function($item, $key){
+			$temp['id'] 		= intval($item['mediaId']);
+			$temp['duration'] 	= intval($item['duration']);
+			$temp['sort'] 		= intval($item['sort']);
+			
+			return $temp;
+		})->toArray();
+		
+		$output['medias'] = $medias;
+		
+		return $output;
+	}
+	
+	/* Update menu
 	 * @params: clone fluent
 	 * @return: array
 	 */
@@ -165,29 +201,24 @@ class MenuService
 		{
 			$this->_log->request = $request->toArray();
 			
-			#1.Insert to db
+			#1.get menu & detail
 			$this->_repository->update($request);
 			
-			#2.重取Data
-			$media = $this->_repository->getById($request->id);
-			
-			#3.Build response
-			$metaData = $this->_buildMetaData($media['_id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
-			
-			#5.Return response
-			$response = ResponseLib::initialize($metaData)->success()->get();
+			#2.Return response
+			$response = ResponseLib::initialize()->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('media.update', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('menu.update', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('編輯Menu失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('media.update', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.update', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.update[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -202,36 +233,26 @@ class MenuService
 	{
 		try
 		{
-			$this->_log->request = $request->toArray();
+			$this->_log->request = $request->id;
 			
-			#1.取舊Data
-			$media = $this->_repository->getById($request->id);
-			
-			#2.Delte media
+			#1.Delte menu
 			$this->_repository->remove($request->id);
 			
-			#3.Remove file
-			$id 	= $media['_id'];
-			$type 	= $media['type'];
-			$path	= $media['path'];
-			
-			if ($type == MediaType::IMAGE->value)
-				$this->_removeMedia($id, $path);
-			
-			#4.Return response
+			#2.Return response
 			$response = ResponseLib::initialize()->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('media.delete', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('menu.delete', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail($e->getMessage())->get(); 
+			$response = ResponseLib::initialize()->fail('刪除Menu失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('media.delete', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.delete', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('menu.delete[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -241,37 +262,17 @@ class MenuService
 	
 	/* ====================== Common ====================== */
 	
-	/* File save for create or update
+	/* Reset menu default setting
 	 * @params: fluent
 	 * @return: array
 	 */
-	private function _processMediaFile($request)
+	private function _resetDefault($request)
 	{
-		#目前只有新增,編輯無
-		#extension():mime type / guessClientExtension():client副檔名
-		if ($request->type == MediaType::IMAGE->value && $request->uploadFile->isValid())
-			$request->path = Storage::disk('tvMenu')->putFile('', $request->uploadFile); #file name, subfolder is empty
-		else if ($request->type == MediaType::VIDEO->value)
-			$request->path = $request->uploadLink;
-		else
-			throw new Exception('無法識別媒體類型');
+		#有設定Default時
+		if ($request->isDefault == True)
+			$this->_repository->resetDefault();
 		
-		unset($request->uploadFile);
-		unset($request->uploadLink);
-	}
-	
-	/* Build response data for return
-	 * @params: 
-	 * @return: array
-	 */
-	private function _buildMetaData($id = 0, $name = '', $isDefault = FALSE)
-	{
-		#正規化Menu output
-		$data['id'] 		= intval($id);
-		$data['name'] 		= $name;
-		$data['isDefault'] 	= boolval($isDefault);
-		
-		return $data;
+		return TRUE;
 	}
 	
 	/* Remove file
