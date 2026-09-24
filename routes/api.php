@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\Api\AccessMiddleware;
 use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\MenuController;
 
 Route::middleware([AccessMiddleware::class])->group(function(){
 	

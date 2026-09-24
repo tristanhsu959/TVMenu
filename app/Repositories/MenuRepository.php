@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 
 
-class MediaRepository extends Repository
+class MenuRepository extends Repository
 {
 	public function __construct()
 	{
@@ -23,8 +23,8 @@ class MediaRepository extends Repository
 		$db = $this->connectTvMenu();
 		
 		$result = $db
-			->table('Medias')
-			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
+			->table('Menus')
+			->select('_id', 'menuName', 'isDefault')
 			/* ->when(empty($request), function ($query) use ($excepts) {
 					$query->whereNotIn('o.posid', $excepts);
 			}) */
@@ -51,7 +51,7 @@ class MediaRepository extends Repository
 			
 			$db = $this->connectTvMenu();
 			
-			$insertId = $db->table('Medias')
+			$insertId = $db->table('Menus')
 						->insertGetId($data);
 		
 			return $insertId;
@@ -71,7 +71,7 @@ class MediaRepository extends Repository
 		$db = $this->connectTvMenu();
 		
 		$result = $db
-			->table('Medias')
+			->table('Menus')
 			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
 			->where('_id', '=', $id)
 			->get()
@@ -97,7 +97,7 @@ class MediaRepository extends Repository
 			
 			$db = $this->connectTvMenu();
 			
-			$db->table('Medias')
+			$db->table('Menus')
 					->where('_id', '=', $request->id)
 					->update($data);
 		
@@ -119,7 +119,7 @@ class MediaRepository extends Repository
 		{
 			$db = $this->connectTvMenu();
 			
-			$db->table('Medias')
+			$db->table('Menus')
 				->where('_id', '=', $id)
 				->delete();
 		

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\MediaService;
+use App\Services\MenuService;
 use App\Libraries\ResponseLib;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Facades\Validator;
 
-class MediaController extends Controller
+class MenuController extends Controller
 {
-	public function __construct(protected MediaService $_service)
+	public function __construct(protected MenuService $_service)
 	{
 	}
 	
@@ -26,10 +26,8 @@ class MediaController extends Controller
 	{
 		if ($request->ajax())
 		{
-			#尚未定義
-			#$enabled	= $request->input('enabled');
-			
-			$formData = new Fluent([]);
+			#TODO: 參數待確認
+			$formData = new Fluent();
 			$response = $this->_service->list($formData);
 			
 			return response()->json($response);
@@ -46,34 +44,26 @@ class MediaController extends Controller
 	{
 		if ($request->ajax())
 		{
-			$mediaName	= $request->input('mediaName');
-			$uploadFile	= $request->file('uploadFile');
-			$uploadLink	= $request->input('uploadLink'); #or Month
-			$stDate		= $request->input('stDate');
-			$endDate	= $request->input('endDate');
-			$type		= $request->integer('type');
-			$enabled	= $request->boolean('enabled');
+			$menuName	= $request->input('menuName');
+			$isDefault	= $request->boolean('isDefault', FALSE);
+			$medias		= $request->input('medias'); #or Month
 			
 			$validator = Validator::make($request->all(), [
 				'mediaName' => 'required',
-				'type' 		=> 'required|in:1,2',
-				'enabled' 	=> 'required',
-				'uploadFile'=> 'required_if:type,1',
-				'uploadLink'=> 'required_if:type,2',
+				'medias' 	=> 'required|array|min:1',
 			]);
 			
 			if ($validator->fails()) 
 			{
-				$response = ResponseLib::initialize()->fail('Request參數錯誤')->get();
+				$response = ResponseLib::initialize()->fail('Request參數錯誤或medias值為空')->get();
 				return response()->json($response);
 			}
 			
 			$formData = new Fluent([]);
-			$formData->mediaName($mediaName)->uploadFile($uploadFile)->uploadLink($uploadLink)
-						->stDate($stDate)->endDate($endDate)->type($type)->enabled($enabled);
+			$formData->mediaName($mediaName)->isDefault($isDefault)->medias($medias);
 						
 			#clone避免交叉影響
-			$response 	= $this->_service->create(clone $formData);
+			$response = $this->_service->create(clone $formData);
 			
 			return response()->json($response);
 		}

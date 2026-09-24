@@ -12,7 +12,7 @@
 @section('content')
 <section class="content-wrapper">
 	<h1 class="red-text">TV Menu</h1>
-	<details x-data="mediaForm" open>
+	<details x-data="mediaForm">
 		<summary>
 			<button class="pink">
 				<span>媒體庫</span>
@@ -21,63 +21,11 @@
 		</summary>
 		
 		<article>
-			<button @click="listMedia">列表 <code class="round white-text light-blue">GET</code> \api\tvMenu\medias</button>
-			<blockquote class="blue-border">
-				<code>Request</code>
-				<div>N/A</div>
-			</blockquote>
-			<blockquote class="pink-border">
-				<code>Response</code>
-				<div>
-				{
-					mediaName: string,
-					mediaFile: string,
-					mediaFileUrl: string,
-					mediaLink: string,
-					stDate: date,
-					endDate: date,
-					type: integer,
-					typeName: string,
-					enabled: boolean
-				}
-				</div>
-			</blockquote>
-		</article>
-		
-		<article>
-			<button class="item" @click="createMedia">新增 <code class="round white-text light-blue">POST</code> \api\tvMenu\medias</button>
-			
-			<blockquote class="blue-border">
-				<code>Request</code>
-				<div>
-				{
-					mediaName: string,
-					uploadFile: file,
-					uploadLink: string,
-					stDate: date,
-					endDate: date,
-					type: integer[1:image, 2:video],
-					enabled: boolean
-				}
-				</div>
-			</blockquote>
-			<blockquote class="pink-border">
-				<code>Response</code>
-				<div>
-				{
-					id: integer
-					mediaName: string,
-					mediaUrl: string,
-					stDate: date,
-					endDate: date,
-					type: integer,
-					typeName: string,
-					enabled: boolean
-				}
-				</div>
-			</blockquote>
-			
 			<nav class="wrap">
+				<div class="field label border small">
+					<input type="text" x-model="formData.id">
+					<label>ID</label>
+				</div>
 				<div class="field label border small">
 					<input type="text" x-model="formData.mediaName">
 					<label>媒體名稱</label>
@@ -115,6 +63,197 @@
 					<span>啟用</span>
 				</label>
 			</nav>
+		</article>
+		
+		<article>
+			<button @click="listMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> \api\tvMenu\medias</button>
+			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: [
+		{
+			id: integer
+			mediaName: string,
+			mediaUrl: string,
+			stDate: date,
+			endDate: date,
+			type: integer,
+			typeName: string,
+			enabled: boolean
+		}, .....
+	]
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item pink4 small-elevate" @click="createMedia">新增 <code class="round white-text pink10">POST</code> \api\tvMenu\medias</button>
+			<pre class="blue-border"><code>Request</code><div>{
+	mediaName: string,
+	uploadFile: file,
+	uploadLink: string,
+	stDate: date,
+	endDate: date,
+	type: integer[1:image, 2:video],
+	enabled: boolean
+}
+</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: {
+		id: integer
+		mediaName: string,
+		mediaUrl: string,
+		stDate: date,
+		endDate: date,
+		type: integer,
+		typeName: string,
+		enabled: boolean
+	}
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item pink4 small-elevate" @click="editMedia">編輯 <code class="round white-text pink10">GET</code> \api\tvMenu\medias\{id}</button>
+			<button class="item pink4 small-elevate" @click="updateMedia">編輯 <code class="round white-text pink10">PUT</code> \api\tvMenu\medias\{id}</button>
+			
+			<pre class="blue-border"><code>Request GET</code><div>N/A</div></pre>
+			<pre class="blue-border"><code>Request PUT</code><div>{
+	mediaName: string,
+	stDate: date,
+	endDate: date,
+	enabled: boolean
+}</div></pre>
+
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: {
+		id: integer
+		mediaName: string,
+		mediaUrl: string,
+		stDate: date,
+		endDate: date,
+		type: integer,
+		typeName: string,
+		enabled: boolean
+	}
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item pink4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text pink10">DELETE</code> \api\tvMenu\medias\{id}</button>
+			
+			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: []
+	msg:
+}</div></pre>
+		</article>
+	</details>
+	
+	
+	
+<!----- Menu ------------------------------------------------------------->
+	<div class="space"></div>
+	<details x-data="menuForm">
+		<summary>
+			<button class="blue">
+				<span>Menu</span>
+				<i>expand_more</i>
+			</button>
+		</summary>
+		
+		<article>
+			<nav class="wrap">
+				<div class="field border fill small">
+					<textarea x-model="mockPayload"></textarea>
+					<output class="red-text">Paste JSON here.</output>
+				</div>
+			</nav>
+		</article>
+		
+		<article>
+			<button @click="listMenu" class="blue4 small-elevate">列表 <code class="round white-text blue10">GET</code> \api\tvMenu\menus</button>
+			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: [
+		{
+			id: integer
+			menuName: string,
+			isDefault: boolean
+		}, .....
+	]
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item blue4 small-elevate" @click="createMenu">新增 <code class="round white-text blue10">POST</code> \api\tvMenu\menus</button>
+			<pre class="blue-border"><code>Request</code><div>{
+	menuName: string,
+	isDefault: boolean,
+	medias:[
+		{
+			id: integer,
+			duration: integer,
+			sort: integer
+		}, ......
+	]
+}
+</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: []
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item blue4 small-elevate" @click="editMenu">編輯 <code class="round white-text blue10">GET</code> \api\tvMenu\menus\{id}</button>
+			<button class="item blue4 small-elevate" @click="updateMenu">編輯 <code class="round white-text blue10">PUT</code> \api\tvMenu\menus\{id}</button>
+			
+			<pre class="blue-border"><code>Request GET</code><div>N/A</div></pre>
+			<pre class="blue-border"><code>Request PUT</code><div>{
+	menuName: string,
+	isDefault: boolean,
+	medias:[
+		{
+			id: integer,
+			duration: integer,
+			sort: integer
+		}, ......
+	]
+}</div></pre>
+
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: {
+		id: integer
+		mediaName: string,
+		mediaUrl: string,
+		stDate: date,
+		endDate: date,
+		type: integer,
+		typeName: string,
+		enabled: boolean
+	}
+	msg:
+}</div></pre>
+		</article>
+		
+		<article>
+			<button class="item blue4 small-elevate" @click="deleteMenu">刪除 <code class="round white-text blue10">DELETE</code> \api\tvMenu\menus\{id}</button>
+			
+			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+	status: true|false
+	data: []
+	msg:
+}</div></pre>
 		</article>
 	</details>
 </section>

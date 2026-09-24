@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\MediaRepository;
+use App\Repositories\MenuRepository;
 use App\Enums\MediaType;
 use App\Libraries\ResponseLib;
 use Illuminate\Support\Arr;
@@ -13,13 +13,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Fluent;
 use Exception;
 
-#當主Service
-class MediaService
+class MenuService
 {
 	private $_log	= NULL;
-	private $_logChannel = 'apiMediaLog';
+	private $_logChannel = 'apiMenuLog';
 	
-	public function __construct(protected MediaRepository $_repository)
+	public function __construct(protected MenuRepository $_repository)
 	{
 		$this->_log 	= new Fluent();
 	}
@@ -68,7 +67,7 @@ class MediaService
 	{
 		$data = collect($list)->map(function($item, $key){
 			
-			$item = $this->_buildMetaData($item['_id'], $item['name'], $item['path'], $item['startDate'], $item['endDate'], $item['type'],  $item['enabled']);
+			$item = $this->_buildMetaData($item['_id'], $item['menuName'], $item['isDefault']);
 			
 			return $item;
 		})->toArray();
@@ -86,7 +85,7 @@ class MediaService
 		try
 		{
 			$this->_log->request = $request->toArray();
-			
+			dd($this->_log);
 			#1.Save media file
 			$this->_processMediaFile($request);
 			
@@ -265,17 +264,12 @@ class MediaService
 	 * @params: 
 	 * @return: array
 	 */
-	private function _buildMetaData($id = 0, $mediaName = '', $path = '', $stDate = NULL, $endDate = NULL, $type = 0, $enabled = TRUE)
+	private function _buildMetaData($id = 0, $name = '', $isDefault = FALSE)
 	{
-		#正規化Media output
+		#正規化Menu output
 		$data['id'] 		= intval($id);
-		$data['mediaName'] 	= $mediaName;
-		$data['mediaUrl']	= ($type == MediaType::IMAGE->value) ? Storage::disk('tvMenu')->url($path) : $path;
-		$data['stDate'] 	= $stDate;
-		$data['endDate'] 	= $endDate;
-		$data['type'] 		= $type;
-		$data['typeName'] 	= MediaType::tryFrom($type)->label();
-		$data['enabled'] 	= boolval($enabled);
+		$data['name'] 		= $name;
+		$data['isDefault'] 	= boolval($isDefault);
 		
 		return $data;
 	}
