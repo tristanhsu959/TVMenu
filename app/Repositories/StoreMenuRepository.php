@@ -24,6 +24,7 @@ class StoreMenuRepository extends Repository
 		{
 			$db = $this->connectTvMenu();
 			
+			#把storeId改為對應_id
 			$result = $db->table('StoreMenu')
 						->select('storeId')
 						->selectRaw('count(tvId) as tvCount')
