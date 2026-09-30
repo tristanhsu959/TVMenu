@@ -159,5 +159,78 @@ document.addEventListener('alpine:init', () => {
 		},
 		
     }));
+	
+	
+	Alpine.data('storeMenuForm', () => ({
+		id: 0,
+		brand: null,
+		mockPayload: '',
+		
+		init() {
+			
+		},
+		
+		async listStore() {
+			const brandCode = (this.brand == null) ? '' : `/${this.brand}`;
+			const response = await axios.get(`/api/tvMenu/storeMenus${brandCode}`);
+		},
+		
+		async createMenu() {
+			/* const mockPayload = {
+				"menuName": "八方Menu",
+				"isDefault": true,
+				"medias": [
+					{
+					  "id": 1,
+					  "duration": 15,
+					  "sort": 1
+					},
+					{
+					  "id": 2,
+					  "duration": 30,
+					  "sort": 2
+					}
+				]
+			};	 */
+			/* const formData = JSON.parse(this.mockPayload); */
+			/* console.log(JSON.parse(this.mockPayload)); */
+			if (this.mockPayload == '')
+			{
+				console.log('No payload');
+				return true;
+			}
+			
+            const response = await axios.post('/api/tvMenu/', JSON.parse(this.mockPayload), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+			});
+			
+			console.log(response);
+		},
+		
+		async editMenu() {
+			const response = await axios.get(`/api/tvMenu//${this.id}`);
+			
+			console.log(response);
+		},
+		
+		async updateMenu() {
+			
+			if (this.mockPayload == '')
+			{
+				console.log('No payload');
+				return true;
+			}
+			
+            const response = await axios.put(`/api/tvMenu//${this.id}`, JSON.parse(this.mockPayload));
+		},
+		
+		async deleteMenu() {
+			
+            const response = await axios.delete(`/api/tvMenu//${this.id}`);
+		},
+		
+    }));
 });
 

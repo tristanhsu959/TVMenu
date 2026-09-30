@@ -68,8 +68,7 @@
 		</article>
 		
 		<article>
-			<button @click="listMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> \api\tvMenu\medias</button>
-			<button @click="activeMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> \api\tvMenu\medias\active</button>
+			<button @click="listMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> \api\tvMenu\medias\{active?}</button>
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
 	status: true|false
@@ -97,7 +96,7 @@
 	uploadLink: string,
 	stDate: date,
 	endDate: date,
-	type: integer[1:image, 2:video],
+	type: integer[1:image | 2:video],
 	enabled: boolean
 }
 </div></pre>
@@ -206,7 +205,7 @@
 	medias:[
 		{
 			id: integer,
-			duration: integer,(default:5)
+			duration: integer [default:5],
 			sort: integer
 		}, ......
 	]
@@ -278,10 +277,10 @@
 	
 <!----- Store ------------------------------------------------------------->
 	<div class="space"></div>
-	<details x-data="mediaForm">
+	<details x-data="storeMenuForm">
 		<summary>
 			<button class="green">
-				<span>門市Menu</span>
+				<span>門市 TVMenu</span>
 				<i>expand_more</i>
 			</button>
 		</summary>
@@ -289,63 +288,33 @@
 		<article>
 			<nav class="wrap">
 				<div class="field label border small">
-					<input type="text" x-model="formData.id">
+					<input type="text" x-model="id">
 					<label>ID</label>
 				</div>
 				<div class="field label border small">
-					<input type="text" x-model="formData.mediaName">
-					<label>媒體名稱</label>
+					<input type="text" x-model="brand">
+					<label>Brand</label>
 				</div>
-				<div x-show="formData.type == 1" class="field label border small" style="width:400px">
-					<input type="file" @change="handleFileChange" accept="image/png, image/jpeg">
-					<input type="text">
-					<label>上傳圖檔</label>
+				<div class="field label border fill small max">
+					<textarea x-model="mockPayload"></textarea>
+					<label class="red-text">Paste JSON here</label>
 				</div>
-				<div  x-show="formData.type == 2" class="field label border small" style="width:400px">
-					<input type="text" x-model="formData.uploadLink">
-					<label>影片連結</label>
-				</div>
-				<div class="field label border small">
-					<input type="date" maxlength="10" x-model="formData.stDate">
-					<label>開始日期</label>
-				</div>
-				<div class="field label border small">
-					<input type="date" maxlength="10" x-model="formData.endDate">
-					<label>結束日期</label>
-				</div>
-				<nav>
-					<label class="radio">
-						<input type="radio" x-model="formData.type" value="1">
-						<span>圖檔</span>
-					</label>
-					<label class="radio">
-						<input type="radio" name="type" x-model="formData.type" value="2">
-						<span>影片</span>
-					</label>
-				</nav>
-				
-				<label class="switch">
-					<input type="checkbox" x-model="formData.enabled" value="1">
-					<span>啟用</span>
-				</label>
 			</nav>
 		</article>
 		
 		<article>
-			<button @click="listMedia" class="green4 small-elevate">列表 <code class="round white-text green10">GET</code> \api\tvMenu\medias</button>
-			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
+			<button @click="listStore" class="green4 small-elevate">列表 <code class="round white-text green10">GET</code> \api\tvMenu\storeMenus\{brand?}</button>
+			<pre class="blue-border"><code>Request</code><div>{
+	brand: string [8WAY|BUYGOOD] OR NULL for all,
+}</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
 	status: true|false
 	data: [
 		{
 			id: integer
-			mediaName: string,
-			mediaUrl: string,
-			stDate: date,
-			endDate: date,
-			type: integer,
-			typeName: string,
-			enabled: boolean
+			no: string,
+			name: string,
+			tvCount: integer,
 		}, .....
 	]
 	msg:
@@ -353,7 +322,7 @@
 		</article>
 		
 		<article>
-			<button class="item green4 small-elevate" @click="createMedia">新增 <code class="round white-text green10">POST</code> \api\tvMenu\medias</button>
+			<button class="item green4 small-elevate" @click="createMedia">新增 <code class="round white-text green10">POST</code> \api\tvMenu\storeMenus</button>
 			<pre class="blue-border"><code>Request</code><div>{
 	mediaName: string,
 	uploadFile: file,
@@ -381,8 +350,8 @@
 		</article>
 		
 		<article>
-			<button class="item green4 small-elevate" @click="editMedia">編輯 <code class="round white-text green10">GET</code> \api\tvMenu\medias\{id}</button>
-			<button class="item green4 small-elevate" @click="updateMedia">編輯 <code class="round white-text green10">PUT</code> \api\tvMenu\medias\{id}</button>
+			<button class="item green4 small-elevate" @click="editMedia">編輯 <code class="round white-text green10">GET</code> \api\tvMenu\storeMenus\{id}</button>
+			<button class="item green4 small-elevate" @click="updateMedia">編輯 <code class="round white-text green10">PUT</code> \api\tvMenu\storeMenus\{id}</button>
 			
 			<pre class="blue-border"><code>Request GET</code><div>N/A</div></pre>
 			<pre class="blue-border"><code>Request PUT</code><div>{
@@ -409,7 +378,7 @@
 		</article>
 		
 		<article>
-			<button class="item green4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text green10">DELETE</code> \api\tvMenu\medias\{id}</button>
+			<button class="item green4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text green10">DELETE</code> \api\tvMenu\storeMenus\{id}</button>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{

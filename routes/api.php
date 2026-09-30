@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Api\AccessMiddleware;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\StoreMenuController;
 
 Route::middleware([AccessMiddleware::class])->group(function(){
 	
 	/* Media */
-	Route::get('tvMenu/medias', [MediaController::class, 'list'])->name('media');
-	Route::get('tvMenu/medias/active', [MediaController::class, 'activeList'])->name('media.active');
+	Route::get('tvMenu/medias/{active?}', [MediaController::class, 'list'])->name('media');
 	Route::post('tvMenu/medias', [MediaController::class, 'create'])->name('media.create');
 	Route::get('tvMenu/medias/{id}', [MediaController::class, 'detail'])->name('media.detail');
 	Route::put('tvMenu/medias/{id}', [MediaController::class, 'update'])->name('media.update');
@@ -25,10 +25,10 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	Route::delete('tvMenu/menus/{id}', [MenuController::class, 'delete'])->name('menu.delete');
 	
 	/* Store Menu Mapping */
-	Route::get('tvMenu/stores', [StoreController::class, 'list'])->name('store');
-	Route::get('tvMenu/stores/{id}', [StoreController::class, 'detail'])->name('store.detail');
-	Route::post('tvMenu/stores/{id}', [StoreController::class, 'upsert'])->name('store.upsert'); #insert or update
-	Route::delete('tvMenu/stores/{id}', [StoreController::class, 'delete'])->name('store.delete');
+	Route::get('tvMenu/storeMenus/{brand?}', [StoreMenuController::class, 'list'])->name('storeMenu');
+	Route::get('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'detail'])->name('storeMenu.detail');
+	Route::post('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'upsert'])->name('storeMenu.upsert'); #insert or update
+	Route::delete('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'delete'])->name('storeMenu.delete');
 });
 
 

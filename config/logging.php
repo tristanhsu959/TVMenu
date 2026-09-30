@@ -70,20 +70,20 @@ return [
 			'path' => storage_path('logs/apiMenu.log'),
 		],
 		#Store Menu
+		'apiStoreMenuLog' => [
+			'driver' => 'daily',
+			'days' => 7,
+			#'channels' => ['daily'],
+			'ignore_exceptions' => false,
+			'path' => storage_path('logs/apiStoreMenu.log'),
+		],
+		
 		'apiStoreLog' => [
 			'driver' => 'daily',
 			'days' => 7,
 			#'channels' => ['daily'],
 			'ignore_exceptions' => false,
 			'path' => storage_path('logs/apiStore.log'),
-		],
-		
-		'commandLog' => [
-			'driver' => 'daily',
-			'days' => 7,
-			#'channels' => ['daily'],
-			'ignore_exceptions' => false,
-			'path' => storage_path('logs/command.log'),
 		],
 		/********** User Define End **********/
 		
