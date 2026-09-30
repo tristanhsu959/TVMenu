@@ -69,7 +69,7 @@ class MediaService
 	{
 		$data = collect($list)->map(function($item, $key){
 			
-			$item = $this->_buildMetaData($item['_id'], $item['name'], $item['path'], $item['startDate'], $item['endDate'], $item['type'],  $item['enabled']);
+			$item = $this->_buildMetaData($item['id'], $item['name'], $item['path'], $item['startDate'], $item['endDate'], $item['type'],  $item['enabled']);
 			
 			return $item;
 		})->toArray();
@@ -136,7 +136,7 @@ class MediaService
 			$media = $this->_repository->getById($id);
 			
 			#2.Build response
-			$metaData = $this->_buildMetaData($media['_id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
+			$metaData = $this->_buildMetaData($media['id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
 			
 			#3.Return response
 			$response = ResponseLib::initialize($metaData)->success()->get();
@@ -176,7 +176,7 @@ class MediaService
 			$media = $this->_repository->getById($request->id);
 			
 			#3.Build response
-			$metaData = $this->_buildMetaData($media['_id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
+			$metaData = $this->_buildMetaData($media['id'], $media['name'], $media['path'], $media['startDate'], $media['endDate'], $media['type'],  $media['enabled']);
 			
 			#5.Return response
 			$response = ResponseLib::initialize($metaData)->success()->get();
@@ -216,7 +216,7 @@ class MediaService
 			$this->_repository->remove($request->id);
 			
 			#3.Remove file
-			$id 	= $media['_id'];
+			$id 	= $media['id'];
 			$type 	= $media['type'];
 			$path	= $media['path'];
 			

@@ -45,7 +45,7 @@ class MenuRepository extends Repository
 		
 		$result = $db
 			->table('Menus')
-			->select('_id', 'menuName', 'isDefault')
+			->select('id', 'menuName', 'isDefault')
 			/* ->when(empty($request), function ($query) use ($excepts) {
 					$query->whereNotIn('o.posid', $excepts);
 			}) */
@@ -131,10 +131,10 @@ class MenuRepository extends Repository
 		
 		$result = $db
 			->table('Menus as m')
-			->leftJoin('MenuDetail as d', 'd.menuId', '=', 'm._id')
-			->select('m._id', 'm.menuName', 'm.isDefault')
+			->leftJoin('MenuDetail as d', 'd.menuId', '=', 'm.id')
+			->select('m.id', 'm.menuName', 'm.isDefault')
 			->addSelect('d.mediaId', 'd.duration', 'd.sort')
-			->where('m._id', '=', $id)
+			->where('m.id', '=', $id)
 			->get()
 			->toArray();
 		
@@ -181,7 +181,7 @@ class MenuRepository extends Repository
 		$data['isDefault'] 	= $isDefault;
 			
 		$db->table('Menus')
-			->where('_id', '=', $id)
+			->where('id', '=', $id)
 			->update($data);
 		
 		return TRUE;
@@ -212,7 +212,7 @@ class MenuRepository extends Repository
 		try 
 		{
 			$db->table('Menus')
-				->where('_id', '=', $id)
+				->where('id', '=', $id)
 				->delete();
 			
 			$db->table('MenuDetail')

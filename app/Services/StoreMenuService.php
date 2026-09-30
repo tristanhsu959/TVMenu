@@ -88,13 +88,13 @@ class StoreMenuService
 	{
 		$list = collect($list)->map(function($item, $key) use($tvList){
 			
-			$count = data_get($tvList, $item['no'], 0);
+			$count = data_get($tvList, $item['id'], 0);
 			
 			$item['tvCount'] = $count;
 			
 			return $item;
 		})->toArray();
-		dd($list);
+		
 		return $list;
 	}
 	

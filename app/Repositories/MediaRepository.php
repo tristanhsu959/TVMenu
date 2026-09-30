@@ -24,7 +24,7 @@ class MediaRepository extends Repository
 		
 		$result = $db
 			->table('Medias')
-			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
+			->select('id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
 			/* ->when(empty($request), function ($query) use ($excepts) {
 					$query->whereNotIn('o.posid', $excepts);
 			}) */
@@ -64,8 +64,8 @@ class MediaRepository extends Repository
 		
 		$result = $db
 			->table('Medias')
-			->select('_id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
-			->where('_id', '=', $id)
+			->select('id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
+			->where('id', '=', $id)
 			->get()
 			->first();
 		
@@ -88,7 +88,7 @@ class MediaRepository extends Repository
 		$db = $this->connectTvMenu();
 		
 		$db->table('Medias')
-				->where('_id', '=', $request->id)
+				->where('id', '=', $request->id)
 				->update($data);
 		
 		return TRUE;		
@@ -103,7 +103,7 @@ class MediaRepository extends Repository
 		$db = $this->connectTvMenu();
 			
 		$db->table('Medias')
-			->where('_id', '=', $id)
+			->where('id', '=', $id)
 			->delete();
 		
 		return TRUE;

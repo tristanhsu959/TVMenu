@@ -22,7 +22,7 @@ class StoreRepository extends Repository
 		$result = $db
 			->table('Stores as s')
 			#->join('StoreSection as st', 'st._Id', '=', 's.section')
-			->select('s._id', 's.brand', 's.storeId', 's.storeName', 's.closeDate')
+			->select('s._id as id', 's.brand', 's.storeId', 's.storeName', 's.closeDate')
 			#->addSelect('st.name as areaName')
 			->when(! empty($brand), function ($query) use($brand){
 				$query->where('s.brand', '=', $brand);
@@ -129,28 +129,4 @@ class StoreRepository extends Repository
 		return $result;
 	}
 	
-	/* 取Product setting
-	 * @params: string
-	 * @params: string
-	 * @params: string
-	 * @return: array
-	 */
-	public function getPosIdFromEzOrder($brand)
-	{
-		$brandId 	= $brand->value;
-		$brandCode 	= config("web.ezorder.store.code.{$brandId}"); #八方點的code
-		
-		$db = $this->connectQuickOrder();
-		
-		$result = $db
-			->table(DB::raw('Stores as s WITH(NOLOCK)'))
-			->select('s.storeId as storeKey', 'posid as posId')
-			->where('s.brand', '=', $brandCode)
-			->where('s.posid', '!=', '')
-			->where('s.posid', '!=', 'null')
-			->get()
-			->toArray();
-		
-		return $result;
-	}
 }

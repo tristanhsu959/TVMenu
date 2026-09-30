@@ -68,7 +68,7 @@ class MenuService
 	{
 		$data = collect($list)->map(function($item, $key){
 			
-			$temp['id'] 		= $item['_id'];
+			$temp['id'] 		= $item['id'];
 			$temp['menuName'] 	= $item['menuName'];
 			$temp['isDefault'] 	= boolval($item['isDefault']);
 			
@@ -173,7 +173,7 @@ class MenuService
 		] */
 		$menu = collect($menu);
 		
-		$output['id'] 			= $menu->pluck('_id')->first();
+		$output['id'] 			= $menu->pluck('id')->first();
 		$output['menuName'] 	= $menu->pluck('menuName')->first();
 		$output['isDefault'] 	= boolval($menu->pluck('isDefault')->first());
 		

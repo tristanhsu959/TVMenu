@@ -52,7 +52,7 @@ class StoreManager
 		$list = $this->_repository->getStoreList($brand, $checkDay);
 		
 		$list = collect($list)->map(function($item, $key){
-			$temp['key'] 	= intval($item['_id']);
+			$temp['id'] 	= intval($item['id']);
 			$temp['brand'] 	= $item['brand'];
 			$temp['no'] 	= $item['storeId']; #Store No
 			$temp['name'] 	= $item['storeName'];
