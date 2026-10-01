@@ -98,65 +98,26 @@ class StoreMenuService
 		return $list;
 	}
 	
-	/* ====================== Create ====================== */
-	/* Create menu
-	 * @params: clone fluent
-	 * @return: array
-	 */
-	public function create($request)
-	{
-		try
-		{
-			$this->_log->request = $request->toArray();
-			
-			#1.Check default setting
-			$this->_resetDefault($request);
-			
-			#2.Insert to db
-			$request->id = $this->_repository->insert($request);
-			
-			#3.Return response
-			$response = ResponseLib::initialize()->success()->get();
-			
-			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('storeMenu.create', $this->_log->toArray());
-			
-			return $response;
-		}
-		catch(Exception $e)
-		{
-			#Api要call get()直接回傳
-			$response = ResponseLib::initialize()->fail('新增Menu失敗')->get(); 
-			
-			$this->_log->response = $response;
-			
-			Log::channel($this->_logChannel)->error('storeMenu.create', $this->_log->toArray());
-			Log::channel($this->_logChannel)->error('storeMenu.create[exception]', [$e->getMessage()]);
-			
-			return $response;
-		}
-	}
 	
-	
-	/* ====================== Get menu ====================== */
+	/* ====================== Get menus ====================== */
 	/* Get menu by id
 	 * @params: int
 	 * @return: array
 	 */
-	public function getMenu($id)
+	public function getMenus($storeId)
 	{
 		try
 		{
-			$this->_log->request = $id;
+			$this->_log->request = $storeId;
 			
-			#1.get menu & detail
-			$menu = $this->_repository->getById($id);
+			#1.Get store info
+			$store = StoreManager::getById($storeId);
 			
-			#2.Build response
-			$output = $this->_buildMenu($menu);
+			#2.get menus & detail
+			$store['menus'] = $this->_repository->getById($storeId);
 			
 			#3.Return response
-			$response = ResponseLib::initialize($output)->success()->get();
+			$response = ResponseLib::initialize($store)->success()->get();
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->info('storeMenu.detail', $this->_log->toArray());
@@ -165,7 +126,7 @@ class StoreMenuService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail('讀取Menu設定失敗')->get(); 
+			$response = ResponseLib::initialize()->fail('讀取門店Menu設定失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('storeMenu.detail', $this->_log->toArray());
@@ -175,70 +136,34 @@ class StoreMenuService
 		}
 	}
 	
-	/* Build response data for return
-	 * @params: 
-	 * @return: array
-	 */
-	private function _buildMenu($menu)
-	{
-		/* id: integer,
-		menuName: string,
-		isDefault: boolean,
-		medias:[
-			{
-				id: integer,
-				duration: integer,
-				sort: integer
-			}, ......
-		] */
-		$menu = collect($menu);
-		
-		$output['id'] 			= $menu->pluck('_id')->first();
-		$output['menuName'] 	= $menu->pluck('menuName')->first();
-		$output['isDefault'] 	= boolval($menu->pluck('isDefault')->first());
-		
-		
-		$medias = $menu->map(function($item, $key){
-			$temp['id'] 		= intval($item['mediaId']);
-			$temp['duration'] 	= intval($item['duration']);
-			$temp['sort'] 		= intval($item['sort']);
-			
-			return $temp;
-		})->toArray();
-		
-		$output['medias'] = $medias;
-		
-		return $output;
-	}
-	
-	/* Update menu
+	/* Insert or Update store menu
 	 * @params: clone fluent
 	 * @return: array
 	 */
-	public function update($request)
+	public function upsert($request)
 	{
 		try
 		{
 			$this->_log->request = $request->toArray();
 			
 			#1.get menu & detail
-			$this->_repository->update($request);
+			$this->_repository->upsert($request->storeId, $request->menus);
 			
 			#2.Return response
 			$response = ResponseLib::initialize()->success()->get();
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->info('menu.update', $this->_log->toArray());
+			Log::channel($this->_logChannel)->info('storeMenu.upsert', $this->_log->toArray());
 			
 			return $response;
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail('編輯Menu失敗')->get(); 
+			$response = ResponseLib::initialize()->fail('設定Store Menu失敗')->get(); 
 			
 			$this->_log->response = $response;
-			Log::channel($this->_logChannel)->error('storeMenu.update', $this->_log->toArray());
-			Log::channel($this->_logChannel)->error('storeMenu.update[exception]', [$e->getMessage()]);
+			Log::channel($this->_logChannel)->error('storeMenu.upsert', $this->_log->toArray());
+			Log::channel($this->_logChannel)->error('storeMenu.upsert[exception]', [$e->getMessage()]);
 			
 			return $response;
 		}
@@ -282,35 +207,5 @@ class StoreMenuService
 	
 	/* ====================== Common ====================== */
 	
-	/* Reset menu default setting
-	 * @params: fluent
-	 * @return: array
-	 */
-	private function _resetDefault($request)
-	{
-		#有設定Default時
-		if ($request->isDefault == True)
-			$this->_repository->resetDefault();
-		
-		return TRUE;
-	}
-	
-	/* Remove file
-	 * @params: fluent
-	 * @return: array
-	 */
-	private function _removeMedia($id, $fileName)
-	{
-		if (! empty($id))
-			$this->_repository->remove($id);
-		
-		if (! empty($fileName))
-		{
-			if (Storage::disk('tvMenu')->exists($fileName))
-				Storage::disk('tvMenu')->delete($fileName);
-		}
-		
-		return TRUE;
-	}
 	
 }

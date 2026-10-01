@@ -36,57 +36,21 @@ class StoreMenuController extends Controller
 		abort(403, '未授權限的呼叫方法');
 	}
 	
-	/* Create menu
+	/* Get store menu by id
 	 * @params: request
 	 * @return: json
 	 */
-	public function create(Request $request)
+	public function detail(Request $request, $storeId)
 	{
 		if ($request->ajax())
 		{
-			$menuName	= $request->input('menuName');
-			$isDefault	= $request->boolean('isDefault', FALSE);
-			$medias		= $request->array('medias');
-			
-			$validator = Validator::make($request->all(), [
-				'menuName' => 'required',
-				'medias' 	=> 'required|array|min:1',
-			]);
-			
-			if ($validator->fails()) 
+			if (empty($storeId)) 
 			{
-				$response = ResponseLib::initialize()->fail('Request參數錯誤或medias值為空')->get();
+				$response = ResponseLib::initialize()->fail('無法識別 Store ID')->get();
 				return response()->json($response);
 			}
 			
-			$formData = new Fluent([]);
-			$formData->menuName($menuName)->isDefault($isDefault)->medias($medias);
-						
-			#clone避免交叉影響
-			$response = $this->_service->create(clone $formData);
-			
-			return response()->json($response);
-		}
-		
-		abort(403, '未授權限的呼叫方法');
-	}
-	
-	/* Get menu by id
-	 * @params: request
-	 * @return: json
-	 */
-	public function detail(Request $request, $id)
-	{
-		if ($request->ajax())
-		{
-			if (empty($id)) 
-			{
-				$response = ResponseLib::initialize()->fail('無法識別 Menu ID')->get();
-				return response()->json($response);
-			}
-			
-			$id = intval($id);
-			$response = $this->_service->getMenu($id);
+			$response = $this->_service->getMenus($storeId);
 			
 			return response()->json($response);
 		}
@@ -98,37 +62,25 @@ class StoreMenuController extends Controller
 	 * @params: request
 	 * @return: json
 	 */
-	public function update(Request $request, $id)
+	public function upsert(Request $request)
 	{
 		#ajax put不能與multipart/form-data共用
 		if ($request->ajax())
 		{
-			if (empty($id)) 
+			$storeId	= $request->input('storeId');
+			$menus		= $request->array('menus'); #空的也要處理,因有可能要移除
+			
+			if (empty($storeId)) 
 			{
-				$response = ResponseLib::initialize()->fail('無法識別 Menu ID')->get();
-				return response()->json($response);
-			}
-			
-			$menuName	= $request->input('menuName');
-			$isDefault	= $request->boolean('isDefault', FALSE);
-			$medias		= $request->array('medias');
-			
-			$validator = Validator::make($request->all(), [
-				'menuName' => 'required',
-				'medias' 	=> 'required|array|min:1',
-			]);
-			
-			if ($validator->fails()) 
-			{
-				$response = ResponseLib::initialize()->fail('Request參數錯誤或medias值為空')->get();
+				$response = ResponseLib::initialize()->fail('無法識別 Store ID')->get();
 				return response()->json($response);
 			}
 			
 			$formData = new Fluent([]);
-			$formData->id(intval($id))->menuName($menuName)->isDefault($isDefault)->medias($medias);
+			$formData->storeId($storeId)->menus($menus);
 						
 			#clone避免交叉影響
-			$response = $this->_service->update(clone $formData);
+			$response = $this->_service->upsert(clone $formData);
 			
 			return response()->json($response);
 		}

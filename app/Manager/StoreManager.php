@@ -49,12 +49,16 @@ class StoreManager
 			"closeDate" => null
 		]
 		*/
+		
+		#_id似乎不固定?所以可能只能用storeId
 		$list = $this->_repository->getStoreList($brand, $checkDay);
 		
-		$list = collect($list)->map(function($item, $key){
-			$temp['id'] 	= intval($item['id']);
+		#filter pos id
+		$list = collect($list)->reject(function($item, $key){
+			return empty($item['posId']) OR Str::lower($item['posId']) == 'null';
+		})->map(function($item, $key){
 			$temp['brand'] 	= $item['brand'];
-			$temp['no'] 	= $item['storeId']; #Store No
+			$temp['id'] 	= $item['storeId']; #this is the store no
 			$temp['name'] 	= $item['storeName'];
 			
 			return $temp;
@@ -63,6 +67,29 @@ class StoreManager
 		return $list;
 	}
 	
+	
+	/* Get store data by id
+	 * @params: array
+	 * @return: array
+	 */
+	public function getById($storeId)
+	{
+		try
+		{
+			$data = $this->_repository->getStoreById($storeId);
+			
+			$store['brand'] = $data['brand'];
+			$store['id'] 	= $data['storeId']; #this is the store no
+			$store['name'] 	= $data['storeName'];
+			
+			return $store;
+		}
+		catch(Exception $e)
+		{
+			Log::channel('apiStoreLog')->error('store manager', [$e->getMessage()]);
+			throw new Exception('讀取門店資料失敗');
+		}
+	}
 	/********************** Store Main Feature End **********************/
 	
 	
@@ -73,7 +100,7 @@ class StoreManager
 	 * @params: array
 	 * @return: array
 	 */
-	public function filterFactoryStore($brand, $storeList)
+	/* public function filterFactoryStore($brand, $storeList)
 	{
 		#ezorder定義的名單,有另調整過
 		$brandId = $brand->value;
@@ -83,7 +110,7 @@ class StoreManager
 		return collect($storeList)->reject(function($item, $key) use($excepts) {
 			return in_array($item['storeKey'], $excepts);
 		})->toArray();
-	}
+	} */
 	
 	
 }

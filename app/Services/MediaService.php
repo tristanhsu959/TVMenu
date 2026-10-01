@@ -36,7 +36,7 @@ class MediaService
 			$this->_log->request = $request->toArray();
 			
 			#1.Get list
-			$list = $this->_repository->getList($request);
+			$list = $this->_repository->getList($request->enabled);
 			
 			#2.Build response
 			$list = $this->_buildList($list);

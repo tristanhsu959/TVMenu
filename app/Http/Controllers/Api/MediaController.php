@@ -26,10 +26,28 @@ class MediaController extends Controller
 	{
 		if ($request->ajax())
 		{
-			#尚未定義
-			#$enabled	= $request->input('enabled');
+			$formData = new Fluent();
+			$formData->enabled = FALSE;
 			
-			$formData = new Fluent([]);
+			$response = $this->_service->list($formData);
+			
+			return response()->json($response);
+		}
+		
+		abort(403, '未授權限的呼叫方法');
+	}
+	
+	/* Get media list
+	 * @params: request
+	 * @return: json
+	 */
+	public function activeList(Request $request)
+	{
+		if ($request->ajax())
+		{
+			$formData = new Fluent();
+			$formData->enabled = TRUE;
+			
 			$response = $this->_service->list($formData);
 			
 			return response()->json($response);

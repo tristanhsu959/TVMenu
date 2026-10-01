@@ -18,16 +18,16 @@ class MediaRepository extends Repository
 	 * @params: fluent
 	 * @return: array
 	 */
-	public function getList($request = NULL)
+	public function getList($enabled = FALSE)
 	{
 		$db = $this->connectTvMenu();
 		
 		$result = $db
 			->table('Medias')
 			->select('id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
-			/* ->when(empty($request), function ($query) use ($excepts) {
-					$query->whereNotIn('o.posid', $excepts);
-			}) */
+			->when($enabled, function ($query) use ($enabled) {
+				$query->where('enabled', $enabled);
+			})
 			->get()
 			->toArray();
 		

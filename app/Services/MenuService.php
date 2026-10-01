@@ -184,7 +184,7 @@ class MenuService
 			$temp['sort'] 		= intval($item['sort']);
 			
 			return $temp;
-		})->toArray();
+		})->sortBy('sort')->toArray();
 		
 		$output['medias'] = $medias;
 		

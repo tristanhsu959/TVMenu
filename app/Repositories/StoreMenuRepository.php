@@ -40,128 +40,54 @@ class StoreMenuRepository extends Repository
 		}
 	}
 	
-	/* Get menu list
-	 * @params: fluent
-	 * @return: array
-	 */
-	public function getList($request = NULL)
-	{
-		$db = $this->connectTvMenu();
-		
-		$result = $db
-			->table('Menus')
-			->select('_id', 'menuName', 'isDefault')
-			/* ->when(empty($request), function ($query) use ($excepts) {
-					$query->whereNotIn('o.posid', $excepts);
-			}) */
-			->get()
-			->toArray();
-		
-		return $result;
-	}
-	
-	/* Create menu
-	 * @params: fluent
-	 * @return: boolean
-	 */
-	public function insert($request)
-	{
-		$db = $this->connectTvMenu();
-		$db->beginTransaction();
-		
-		try 
-		{
-			$insertId = $this->_insertMenu($db, $request->menuName, $request->isDefault);
-			
-			$this->_insertDetail($db, $insertId, $request->medias);
-			
-			$db->commit();
-
-			return TRUE;
-		} 
-		catch (Exception $e) 
-		{
-			$db->rollBack();
-			throw new Exception($e->getMessage());
-		}
-		
-		return TRUE;
-	}
-	
-	/* Create menu
-	 * @params: fluent
-	 * @return: boolean
-	 */
-	public function _insertMenu($db, $menuName, $isDefault)
-	{
-		$data['menuName']	= $menuName;
-		$data['isDefault'] 	= boolval($isDefault);
-			
-		$insertId = $db->table('Menus')
-						->insertGetId($data);
-		
-		return $insertId;
-	}
-	
-	/* Create menu details
-	 * @params: fluent
-	 * @return: boolean
-	 */
-	public function _insertDetail($db, $menuId, $medias)
-	{
-		$data = [];
-		
-		foreach($medias as $media)
-		{
-			$row['menuId']		= $menuId;
-			$row['mediaId'] 	= $media['id'];
-			$row['duration'] 	= empty($media['duration']) ? 5 : intval($media['duration']);
-			$row['sort'] 		= intval($media['sort']);
-			
-			$data[] = $row;
-		}
-			
-		$db->table('MenuDetail')->insert($data);
-		
-		return TRUE;
-	}
-	
 	/* Get menu by id
 	 * @params: fluent
 	 * @return: array
 	 */
-	public function getById($id)
+	public function getById($storeId)
 	{
+		#for testing
+		$test = json_decode('[{
+			"tvId": 1,
+			"menuId": 4
+		},
+        {
+			"tvId": 2,
+			"menuId": 7
+		}
+		]', true);
+		
+		return $test;
+		
+		
 		$db = $this->connectTvMenu();
 		
 		$result = $db
-			->table('Menus as m')
-			->leftJoin('MenuDetail as d', 'd.menuId', '=', 'm._id')
-			->select('m._id', 'm.menuName', 'm.isDefault')
-			->addSelect('d.mediaId', 'd.duration', 'd.sort')
-			->where('m._id', '=', $id)
+			->table('StoreMenu')
+			->select('storeId', 'tvId', 'menuId')
+			->where('storeId', '=', $storeId)
+			->orderBy('tvId')
 			->get()
 			->toArray();
 		
 		return $result;
 	}
 	
-	/* Update menu
+	
+	/* Insert store menu
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function update($request)
+	public function upsert($storeId, $menus)
 	{
 		$db = $this->connectTvMenu();
 		$db->beginTransaction();
 		
 		try 
 		{
-			$this->_updateMenu($db, $request->id, $request->menuName, $request->isDefault);
+			$this->_removeById($db, $storeId);
 			
-			$this->_removeDetailByMenuId($db, $request->id);
-			
-			$this->_insertDetail($db, $request->id, $request->medias);
+			$this->_insertMenu($db, $storeId, $menus);
 			
 			$db->commit();
 
@@ -172,22 +98,6 @@ class StoreMenuRepository extends Repository
 			$db->rollBack();
 			throw new Exception($e->getMessage());
 		}
-		
-		return TRUE;
-	}
-	
-	/* Update menu
-	 * @params: fluent
-	 * @return: boolean
-	 */
-	public function _updateMenu($db, $id, $menuName, $isDefault)
-	{
-		$data['menuName']	= $menuName;
-		$data['isDefault'] 	= $isDefault;
-			
-		$db->table('Menus')
-			->where('_id', '=', $id)
-			->update($data);
 		
 		return TRUE;
 	}
@@ -196,11 +106,33 @@ class StoreMenuRepository extends Repository
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function _removeDetailByMenuId($db, $menuId)
+	public function _removeById($db, $storeId)
 	{
-		$db->table('MenuDetail')
-			->where('menuId', '=', $menuId)
+		$db->table('StoreMenu')
+			->where('storeId', '=', $storeId)
 			->delete();
+		
+		return TRUE;
+	}
+	
+	/* Create menu
+	 * @params: fluent
+	 * @return: boolean
+	 */
+	public function _insertMenu($db, $storeId, $menus)
+	{
+		$data = [];
+		
+		foreach($menus as $menu)
+		{
+			$row['storeId']		= $storeId;
+			$row['tvId'] 		= $menu['tvId'];
+			$row['menuId'] 		= $menu['menuId'];
+			
+			$data[] = $row;
+		}
+			
+		$db->table('StoreMenu')->insert($data);
 		
 		return TRUE;
 	}
