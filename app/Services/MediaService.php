@@ -264,8 +264,8 @@ class MediaService
 			$image = Image::read($request->uploadFile->getRealPath());
 			$image->scale(width: 1920);
 			
-			$jpg	= $image->toJpeg(90);
-			$webp 	= $image->toWebp(90); #default quality is 75
+			$jpg	= $image->toJpeg(50);
+			$webp 	= $image->toWebp(50); #default quality is 75
 			
 			#用同檔名,就無須存DB
 			$fileName = Str::uuid();
