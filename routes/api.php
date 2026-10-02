@@ -26,7 +26,7 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	Route::delete('tvMenu/menus/{id}', [MenuController::class, 'delete'])->name('menu.delete')->whereNumber('id');
 	
 	/* Store Menu Mapping */
-	Route::get('tvMenu/storeMenus/{brand?}', [StoreMenuController::class, 'list'])->name('storeMenu')->where('brand', '8WAY|8way|BUYGOOD|buygood');
+	Route::get('tvMenu/storeMenus/{brand?}', [StoreMenuController::class, 'list'])->name('storeMenu')->where('brand', '(?i)8WAY|BUYGOOD');
 	Route::post('tvMenu/storeMenus', [StoreMenuController::class, 'upsert'])->name('storeMenu.upsert'); #insert or update
 	Route::get('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'detail'])->name('storeMenu.detail');
 	Route::delete('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'delete'])->name('storeMenu.delete');

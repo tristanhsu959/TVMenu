@@ -92,18 +92,18 @@ class StoreMenuController extends Controller
 	 * @params: request
 	 * @return: json
 	 */
-	public function delete(Request $request, $id)
+	public function delete(Request $request, $storeId)
 	{
 		if ($request->ajax())
 		{
-			if (empty($id)) 
+			if (empty($storeId)) 
 			{
-				$response = ResponseLib::initialize()->fail('無法識別 Menu ID')->get();
+				$response = ResponseLib::initialize()->fail('無法識別 Store ID')->get();
 				return response()->json($response);
 			}
 			
 			$formData = new Fluent([]);
-			$formData->id(intval($id));
+			$formData->storeId($storeId);
 						
 			#clone避免交叉影響
 			$response 	= $this->_service->delete(clone $formData);

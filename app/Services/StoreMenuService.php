@@ -126,7 +126,7 @@ class StoreMenuService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail('讀取門店Menu設定失敗')->get(); 
+			$response = ResponseLib::initialize()->fail('讀取Store Menu設定失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('storeMenu.detail', $this->_log->toArray());
@@ -159,7 +159,7 @@ class StoreMenuService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail('設定Store Menu失敗')->get(); 
+			$response = ResponseLib::initialize()->fail('Store Menu設定失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('storeMenu.upsert', $this->_log->toArray());
@@ -178,10 +178,10 @@ class StoreMenuService
 	{
 		try
 		{
-			$this->_log->request = $request->id;
+			$this->_log->request = $request->toArray();
 			
 			#1.Delte menu
-			$this->_repository->remove($request->id);
+			$this->_repository->remove($request->storeId);
 			
 			#2.Return response
 			$response = ResponseLib::initialize()->success()->get();
@@ -193,7 +193,7 @@ class StoreMenuService
 		}
 		catch(Exception $e)
 		{
-			$response = ResponseLib::initialize()->fail('刪除Menu失敗')->get(); 
+			$response = ResponseLib::initialize()->fail('Store Menu刪除失敗')->get(); 
 			
 			$this->_log->response = $response;
 			Log::channel($this->_logChannel)->error('storeMenu.delete', $this->_log->toArray());

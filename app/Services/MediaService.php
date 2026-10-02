@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Fluent;
+use Intervention\Image\Laravel\Facades\Image;
 use Exception;
 
 #當主Service
@@ -253,10 +254,27 @@ class MediaService
 	 */
 	private function _processMediaFile($request)
 	{
+		#壓縮圖檔需安裝:composer require intervention/image
 		#目前只有新增,編輯無
 		#extension():mime type / guessClientExtension():client副檔名
+		
 		if ($request->type == MediaType::IMAGE->value && $request->uploadFile->isValid())
-			$request->path = Storage::disk('tvMenu')->putFile('', $request->uploadFile); #file name, subfolder is empty
+		{
+			#1920 × 1080
+			$image = Image::read($request->uploadFile->getRealPath());
+			$image->scale(width: 1920);
+			
+			$jpg	= $image->toJpeg(90);
+			$webp 	= $image->toWebp(90); #default quality is 75
+			
+			#用同檔名,就無須存DB
+			$fileName = Str::uuid();
+			$request->path = "{$fileName}.jpg";
+			$webpPath = "webp/{$fileName}.webp";
+			
+			Storage::disk('tvMenu')->put($request->path, (string)$jpg); #put, putFile are different
+			Storage::disk('tvMenu')->put($webpPath, (string)$webp); #put, putFile are different
+		}
 		else if ($request->type == MediaType::VIDEO->value)
 			$request->path = $request->uploadLink;
 		else
@@ -275,7 +293,17 @@ class MediaService
 		#正規化Media output
 		$data['id'] 		= intval($id);
 		$data['mediaName'] 	= $mediaName;
-		$data['mediaUrl']	= ($type == MediaType::IMAGE->value) ? Storage::disk('tvMenu')->url($path) : $path;
+		
+		if ($type == MediaType::IMAGE->value)
+		{
+			$webpPath = Str::of('webp/')->append(Str::replaceEnd('jpg', 'webp', $path));
+			
+			$data['mediaUrl']	= Storage::disk('tvMenu')->url($path);
+			$data['webpUrl']	= Storage::disk('tvMenu')->url($webpPath);
+		}
+		else
+			$data['mediaUrl']	= $path;
+		
 		$data['stDate'] 	= $stDate;
 		$data['endDate'] 	= $endDate;
 		$data['type'] 		= $type;

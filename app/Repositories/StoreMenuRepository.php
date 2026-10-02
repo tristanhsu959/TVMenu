@@ -141,30 +141,12 @@ class StoreMenuRepository extends Repository
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function remove($id)
+	public function remove($storeId)
 	{
 		$db = $this->connectTvMenu();
-		$db->beginTransaction();
-		
-		try 
-		{
-			$db->table('Menus')
-				->where('_id', '=', $id)
+		$db->table('StoreMenu')
+				->where('storeId', '=', $storeId)
 				->delete();
-			
-			$db->table('MenuDetail')
-				->where('menuId', '=', $id)
-				->delete();
-				
-			$db->commit();
-
-			return TRUE;
-		} 
-		catch (Exception $e) 
-		{
-			$db->rollBack();
-			throw new Exception($e->getMessage());
-		}
 		
 		return TRUE;
 	}
