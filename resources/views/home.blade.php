@@ -81,7 +81,7 @@
             "mediaUrl": "http://laravel.local:9999/storage/tvMenu/XPoIVwvVejQVjeP8GIDf1Tbp5ZREHCQv62r5nOaJ.png",
             "stDate": "2026-09-23",
             "endDate": "2026-09-30",
-            "type": "1",
+            "type": 1,
             "typeName": "圖片",
             "enabled": true
         },.....
@@ -141,7 +141,7 @@
         "mediaUrl": "https://test.co",
         "stDate": "2026-10-01",
         "endDate": "2026-10-11",
-        "type": "2",
+        "type": 2,
         "typeName": "影片",
         "enabled": false
     },
@@ -196,7 +196,7 @@
     "status": true,
     "data": [
         {
-            "id": "4",
+            "id": 4,
             "menuName": "八方Menu-1",
             "isDefault": false
         },...
