@@ -46,20 +46,6 @@ class StoreMenuRepository extends Repository
 	 */
 	public function getById($storeId)
 	{
-		#for testing
-		$test = json_decode('[{
-			"tvId": 1,
-			"menuId": 4
-		},
-        {
-			"tvId": 2,
-			"menuId": 7
-		}
-		]', true);
-		
-		return $test;
-		
-		
 		$db = $this->connectTvMenu();
 		
 		$result = $db

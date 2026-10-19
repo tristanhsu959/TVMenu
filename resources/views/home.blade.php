@@ -337,9 +337,9 @@
 		
 		
 		<article>
-			<button class="item green4 small-elevate" @click="editMedia">編輯 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/storeId')}}</button>
-			<button class="item green4 small-elevate" @click="updateMedia">新增 | 編輯<code class="round white-text green10">POST</code> {{url('api/tvMenu/storeMenus/storeId')}}</button>
-			<code>{{url('api/tvMenu/storeMenus')}}/storeId</code>
+			<button class="item green4 small-elevate" @click="editStoreMenu">編輯 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/storeId')}}</button>
+			<button class="item green4 small-elevate" @click="updateStoreMenu">新增 | 編輯<code class="round white-text green10">POST</code> {{url('api/tvMenu/storeMenus')}}</button>
+			<code>{{url('api/tvMenu/storeMenus')}}/{storeId?}</code>
 			
 			<pre class="blue-border"><code>Request GET</code><div>storeId: string</div></pre>
 			<pre class="pink-border"><code>Response GET</code><div>{
@@ -385,7 +385,7 @@
 		</article>
 		
 		<article>
-			<button class="item green4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text green10">DELETE</code> \api\tvMenu\storeMenus\{id}</button>
+			<button class="item green4 small-elevate" @click="deleteStoreMenu">刪除 <code class="round white-text green10">DELETE</code> \api\tvMenu\storeMenus\{id}</button>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{

@@ -49,6 +49,7 @@ class StoreRepository extends Repository
 		$result = $db
 			->table('Stores')
 			->select('brand', 'storeId', 'storeName')
+			->where('storeId', '=', $storeId)
 			->first(); 
 		
 		return $result;

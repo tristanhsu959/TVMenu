@@ -175,7 +175,7 @@ document.addEventListener('alpine:init', () => {
 			const response = await axios.get(`/api/tvMenu/storeMenus${brandCode}`);
 		},
 		
-		async createMenu() {
+		async createStoreMenu() {
 			/* const mockPayload = {
 				"menuName": "八方Menu",
 				"isDefault": true,
@@ -209,13 +209,13 @@ document.addEventListener('alpine:init', () => {
 			console.log(response);
 		},
 		
-		async editMenu() {
-			const response = await axios.get(`/api/tvMenu//${this.id}`);
+		async editStoreMenu() {
+			const response = await axios.get(`/api/tvMenu/storeMenus/${this.id}`);
 			
 			console.log(response);
 		},
 		
-		async updateMenu() {
+		async updateStoreMenu() {
 			
 			if (this.mockPayload == '')
 			{
@@ -223,12 +223,12 @@ document.addEventListener('alpine:init', () => {
 				return true;
 			}
 			
-            const response = await axios.put(`/api/tvMenu//${this.id}`, JSON.parse(this.mockPayload));
+            const response = await axios.put(`/api/tvMenu/storeMenus/${this.id}`, JSON.parse(this.mockPayload));
 		},
 		
-		async deleteMenu() {
+		async deleteStoreMenu() {
 			
-            const response = await axios.delete(`/api/tvMenu//${this.id}`);
+            const response = await axios.delete(`/api/tvMenu/storeMenus/${this.id}`);
 		},
 		
     }));
