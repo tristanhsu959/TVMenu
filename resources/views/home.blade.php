@@ -292,7 +292,7 @@
 	<details x-data="storeMenuForm">
 		<summary>
 			<button class="green">
-				<span>門市 TVMenu</span>
+				<span>門店 TVMenu</span>
 				<i>expand_more</i>
 			</button>
 		</summary>
@@ -394,6 +394,64 @@
     "msg": ""
 }</div></pre>
 		</article>
+	</details>
+	
+	<!----- Store Menu Player ------------------------------------------------------------->
+	<div class="space"></div>
+	<details x-data="storeMenuPlayForm(@js(url('api/tvMenu/play')))">
+		<summary>
+			<button class="orange">
+				<span>門店 TVMenu 播放</span>
+				<i>expand_more</i>
+			</button>
+		</summary>
+		
+		<article>
+			<nav class="wrap">
+				<div class="field label border small">
+					<input type="text" x-model="id">
+					<label>ID</label>
+				</div>
+				<div class="field label border small">
+					<input type="text" x-model="tvId">
+					<label>TV ID</label>
+				</div>
+			</nav>
+		</article>
+		
+		<article>
+			<button @click="getStoreMenu" class="green4 small-elevate">Get Setting <code class="round white-text green10">GET</code>
+			<span x-text="buildUrl"></span>
+			</button>
+			
+			<code>{{url('api/tvMenu/play/storeId/tvId')}}</code>
+			
+			<pre class="blue-border"><code>Request</code><div>
+	N/A
+</div></pre>
+			<pre class="pink-border"><code>Response</code><div>{
+    "status": true
+    "data" : {
+        "storeId" : "1000001",
+        "tvId" : 1
+        "menuName" : "new menu 2"
+        "isDefault" : false
+        "medais" : [
+            {
+                "name" : "test-004"
+                "type" : 1
+                "mediaPath" : "http://laravel.local:9999/storage/tvMenu/d36588e9-3293-4d20-bcfe-569db925efe2.jpg"
+                "webpPath" : "http://laravel.local:9999/storage/tvMenu/webp/d36588e9-3293-4d20-bcfe-569db925efe2.jpg"
+                "duration" : 5
+                "sort" : 1
+            },.....
+        ]
+    }
+    "msg" => ""
+}</div></pre>
+		</article>
+		
+		
 	</details>
 </section>
 @endsection

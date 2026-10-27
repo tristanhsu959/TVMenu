@@ -28,7 +28,7 @@ document.addEventListener('alpine:init', () => {
             const response = await axios.get('/api/tvMenu/medias');
 		},
 		
-		async activeMedia() {
+		async listActiveMedia() {
 			/* const formData = new FormData(); */
             
             const response = await axios.get('/api/tvMenu/medias/active');
@@ -230,6 +230,30 @@ document.addEventListener('alpine:init', () => {
 			
             const response = await axios.delete(`/api/tvMenu/storeMenus/${this.id}`);
 		},
+		
+    }));
+	
+	
+	Alpine.data('storeMenuPlayForm', (baseUrl) => ({
+		baseUrl: baseUrl,
+		id: '',
+		tvId: '',
+		
+		init() {
+		},
+		
+		get buildUrl(){
+			let id = (this.id == '') ? 'storeId' : this.id;
+			let tvId = (this.tvId == '') ? 'tvId' : this.tvId;
+			
+			return `${this.baseUrl}/${id}/${tvId}`;
+		},
+		
+		async getStoreMenu() {
+			let url = `${this.baseUrl}/${this.id}/${this.tvId}`;
+			const response = await axios.get(url);
+		},
+		
 		
     }));
 });

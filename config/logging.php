@@ -78,6 +78,16 @@ return [
 			'path' => storage_path('logs/apiStoreMenu.log'),
 		],
 		
+		#Store Menu Play
+		'apiPlayLog' => [
+			'driver' => 'daily',
+			'days' => 7,
+			#'channels' => ['daily'],
+			'ignore_exceptions' => false,
+			'path' => storage_path('logs/apiPlay.log'),
+		],
+		
+		#for Store manager
 		'apiStoreLog' => [
 			'driver' => 'daily',
 			'days' => 7,

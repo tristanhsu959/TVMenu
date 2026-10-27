@@ -7,6 +7,7 @@ use App\Http\Middleware\Api\AccessMiddleware;
 use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\StoreMenuController;
+use App\Http\Controllers\Api\PlayController;
 
 Route::middleware([AccessMiddleware::class])->group(function(){
 	
@@ -30,6 +31,9 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	Route::post('tvMenu/storeMenus', [StoreMenuController::class, 'upsert'])->name('storeMenu.upsert'); #insert or update
 	Route::get('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'detail'])->name('storeMenu.detail');
 	Route::delete('tvMenu/storeMenus/{id}', [StoreMenuController::class, 'delete'])->name('storeMenu.delete');
+	
+	/* Store Menu Player */
+	Route::get('tvMenu/play/{storeId?}/{tvId?}', [PlayController::class, 'play'])->name('storeMenu.play');
 });
 
 
