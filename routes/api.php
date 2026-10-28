@@ -13,6 +13,7 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	
 	/* Media */
 	Route::get('tvMenu/medias', [MediaController::class, 'list'])->name('media');
+	Route::get('tvMenu/medias/{mediaType?}', [MediaController::class, 'list'])->name('media')->whereNumber('mediaType');;
 	Route::get('tvMenu/medias/active', [MediaController::class, 'activeList'])->name('media');
 	Route::post('tvMenu/medias', [MediaController::class, 'create'])->name('media.create');
 	Route::get('tvMenu/medias/{id}', [MediaController::class, 'detail'])->name('media.detail')->whereNumber('id');
@@ -20,7 +21,7 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	Route::delete('tvMenu/medias/{id}', [MediaController::class, 'delete'])->name('media.delete')->whereNumber('id');
 	
 	/* Menu */
-	Route::get('tvMenu/menus', [MenuController::class, 'list'])->name('menu');
+	Route::get('tvMenu/menus/{brand?}', [MenuController::class, 'list'])->name('menu')->where('brand', '(?i)8WAY|BUYGOOD');
 	Route::post('tvMenu/menus', [MenuController::class, 'create'])->name('menu.create');
 	Route::get('tvMenu/menus/{id}', [MenuController::class, 'detail'])->name('menu.detail')->whereNumber('id');
 	Route::put('tvMenu/menus/{id}', [MenuController::class, 'update'])->name('menu.update')->whereNumber('id');

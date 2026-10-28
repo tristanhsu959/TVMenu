@@ -33,7 +33,7 @@ class MenuService
 		try
 		{
 			$this->_log->request = $request->toArray();
-			
+			dd($request);
 			#1.Get list
 			$list = $this->_repository->getList($request);
 			

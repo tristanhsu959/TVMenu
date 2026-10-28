@@ -63,6 +63,11 @@
 					<input type="checkbox" x-model="formData.enabled" value="1">
 					<span>啟用</span>
 				</label>
+				
+				<div class="field label border small">
+					<input type="text" x-model="mediaType">
+					<label>查詢媒體類型ID</label>
+				</div>
 			</nav>
 		</article>
 		
@@ -189,7 +194,7 @@
 		
 		<article>
 			<button @click="listMenu" class="blue4 small-elevate">列表 <code class="round white-text blue10">GET</code> {{url('api/tvMenu/menus')}}</button>
-			<code>{{url('api/tvMenu/menus')}}</code>
+			<code>{{url('api/tvMenu/menus/{brand?}')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{

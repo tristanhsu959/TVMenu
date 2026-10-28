@@ -22,12 +22,12 @@ class MenuController extends Controller
 	 * @params: request
 	 * @return: json
 	 */
-	public function list(Request $request)
+	public function list(Request $request, $brand = NULL)
 	{
 		if ($request->ajax())
 		{
-			#TODO: 參數待確認
 			$formData = new Fluent();
+			$formData->brand($brand);
 			$response = $this->_service->list($formData);
 			
 			return response()->json($response);

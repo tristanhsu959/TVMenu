@@ -11,6 +11,7 @@ document.addEventListener('alpine:init', () => {
 			type: 1,
 			enabled: true
 		},
+		mediaType: null,
 		
 		init() {
 			
@@ -23,9 +24,8 @@ document.addEventListener('alpine:init', () => {
                 this.formData.uploadFile = files[0]; 
 		},
 		async listMedia() {
-			/* const formData = new FormData(); */
-            
-            const response = await axios.get('/api/tvMenu/medias');
+			const type = (this.mediaType == null) ? '' : `/${this.mediaType}`;
+            const response = await axios.get(`/api/tvMenu/medias${type}`);
 		},
 		
 		async listActiveMedia() {
