@@ -13,8 +13,9 @@ Route::middleware([AccessMiddleware::class])->group(function(){
 	
 	/* Media */
 	Route::get('tvMenu/medias', [MediaController::class, 'list'])->name('media');
-	Route::get('tvMenu/medias/{mediaType?}', [MediaController::class, 'list'])->name('media')->whereNumber('mediaType');;
-	Route::get('tvMenu/medias/active', [MediaController::class, 'activeList'])->name('media');
+	Route::get('tvMenu/medias/{mediaType?}', [MediaController::class, 'list'])->name('media.type')->whereNumber('mediaType');
+	Route::get('tvMenu/medias/active', [MediaController::class, 'activeList'])->name('media.active');
+	Route::get('tvMenu/medias/active/{mediaType?}', [MediaController::class, 'activeList'])->name('media.active.type')->whereNumber('mediaType');
 	Route::post('tvMenu/medias', [MediaController::class, 'create'])->name('media.create');
 	Route::get('tvMenu/medias/{id}', [MediaController::class, 'detail'])->name('media.detail')->whereNumber('id');
 	Route::put('tvMenu/medias/{id}', [MediaController::class, 'update'])->name('media.update')->whereNumber('id');

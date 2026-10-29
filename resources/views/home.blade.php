@@ -72,9 +72,12 @@
 		</article>
 		
 		<article>
-			<button @click="listMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias') }}</button>
-			<button @click="listActiveMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias/active')}}</button>
-			<code>{{url('api/tvMenu/medias') }}/{active?}</code>
+			<p>
+				<button @click="listMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias/{mediaType?}') }}</button>
+				<code>{{url('api/tvMenu/medias/{mediaType?}') }}</code>
+			</p>
+			<button @click="listActiveMedia" class="pink4 small-elevate">列表 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias/active/{mediaType?}')}}</button>
+			<code>{{url('api/tvMenu/medias/active/{mediaType?}') }}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
@@ -126,9 +129,9 @@
 		</article>
 		
 		<article>
-			<button class="item pink4 small-elevate" @click="editMedia">編輯 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias/id')}}</button>
-			<button class="item pink4 small-elevate" @click="updateMedia">編輯 <code class="round white-text pink10">PUT</code> {{url('api/tvMenu/medias/id')}}</button>
-			<code>{{url('api/tvMenu/medias')}}/{id}</code>
+			<button class="item pink4 small-elevate" @click="editMedia">編輯 <code class="round white-text pink10">GET</code> {{url('api/tvMenu/medias/{id}')}}</button>
+			<button class="item pink4 small-elevate" @click="updateMedia">編輯 <code class="round white-text pink10">PUT</code> {{url('api/tvMenu/medias/{id}')}}</button>
+			<code>{{url('api/tvMenu/medias/{id}')}}</code>
 			
 			<pre class="blue-border"><code>Request GET</code><div>N/A</div></pre>
 			<pre class="blue-border"><code>Request PUT</code><div>{
@@ -155,8 +158,8 @@
 		</article>
 		
 		<article>
-			<button class="item pink4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text pink10">DELETE</code> {{url('api/tvMenu/medias/id')}}</button>
-			<code>{{url('api/tvMenu/medias')}}/{id}</code>
+			<button class="item pink4 small-elevate" @click="deleteMedia">刪除 <code class="round white-text pink10">DELETE</code> {{url('api/tvMenu/medias/{id}')}}</button>
+			<code>{{url('api/tvMenu/medias/{id}')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
@@ -194,7 +197,7 @@
 		
 		<article>
 			<button @click="listMenu" class="blue4 small-elevate">列表 <code class="round white-text blue10">GET</code> {{url('api/tvMenu/menus')}}</button>
-			<code>{{url('api/tvMenu/menus/{brand?}')}}</code>
+			<code>{{url('api/tvMenu/menus')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
@@ -234,9 +237,9 @@
 		</article>
 		
 		<article>
-			<button class="item blue4 small-elevate" @click="editMenu">編輯 <code class="round white-text blue10">GET</code> {{url('api/tvMenu/menus/id')}}</button>
-			<button class="item blue4 small-elevate" @click="updateMenu">編輯 <code class="round white-text blue10">PUT</code> {{url('api/tvMenu/menus/id')}}</button>
-			<code>{{url('api/tvMenu/menus')}}/{id}</code>
+			<button class="item blue4 small-elevate" @click="editMenu">編輯 <code class="round white-text blue10">GET</code> {{url('api/tvMenu/menus/{id}')}}</button>
+			<button class="item blue4 small-elevate" @click="updateMenu">編輯 <code class="round white-text blue10">PUT</code> {{url('api/tvMenu/menus/{id}')}}</button>
+			<code>{{url('api/tvMenu/menus/{id}')}}</code>
 			
 			<pre class="blue-border"><code>Request GET</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response GET</code><div>{
@@ -278,8 +281,8 @@
 		</article>
 		
 		<article>
-			<button class="item blue4 small-elevate" @click="deleteMenu">刪除 <code class="round white-text blue10">DELETE</code> {{url('api/tvMenu/menus/id')}}</button>
-			<code>{{url('api/tvMenu/menus')}}/{id}</code>
+			<button class="item blue4 small-elevate" @click="deleteMenu">刪除 <code class="round white-text blue10">DELETE</code> {{url('api/tvMenu/menus/{id}')}}</button>
+			<code>{{url('api/tvMenu/menus/{id}')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
@@ -320,8 +323,8 @@
 		</article>
 		
 		<article>
-			<button @click="listStore" class="green4 small-elevate">列表 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/brand')}}</button>
-			<code>{{url('api/tvMenu/storeMenus')}}/{brand?}</code>
+			<button @click="listStore" class="green4 small-elevate">列表 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/{brand?}')}}</button>
+			<code>{{url('api/tvMenu/storeMenus/{brand?}')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>
 	brand: string [8WAY|BUYGOOD] or empty for all
@@ -342,9 +345,9 @@
 		
 		
 		<article>
-			<button class="item green4 small-elevate" @click="editStoreMenu">編輯 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/storeId')}}</button>
+			<button class="item green4 small-elevate" @click="editStoreMenu">編輯 <code class="round white-text green10">GET</code> {{url('api/tvMenu/storeMenus/{storeId}')}}</button>
 			<button class="item green4 small-elevate" @click="updateStoreMenu">新增 | 編輯<code class="round white-text green10">POST</code> {{url('api/tvMenu/storeMenus')}}</button>
-			<code>{{url('api/tvMenu/storeMenus')}}/{storeId?}</code>
+			<code>{{url('api/tvMenu/storeMenus/{storeId?}')}}</code>
 			
 			<pre class="blue-border"><code>Request GET</code><div>storeId: string</div></pre>
 			<pre class="pink-border"><code>Response GET</code><div>{
@@ -390,8 +393,8 @@
 		</article>
 		
 		<article>
-			<button class="item green4 small-elevate" @click="deleteStoreMenu">刪除 <code class="round white-text green10">DELETE</code> \api\tvMenu\storeMenus\{id}</button>
-			
+			<button class="item green4 small-elevate" @click="deleteStoreMenu">刪除 <code class="round white-text green10">DELETE</code> {{url('\api\tvMenu\storeMenus\{storeId}') }}</button>
+			<code>{{url('\api\tvMenu\storeMenus\{storeId}')}}</code>
 			<pre class="blue-border"><code>Request</code><div>N/A</div></pre>
 			<pre class="pink-border"><code>Response</code><div>{
     "status": true,
@@ -429,7 +432,7 @@
 			<span x-text="buildUrl"></span>
 			</button>
 			
-			<code>{{url('api/tvMenu/play/storeId/tvId')}}</code>
+			<code>{{url('api/tvMenu/play/{storeId}/{tvId}')}}</code>
 			
 			<pre class="blue-border"><code>Request</code><div>
 	N/A

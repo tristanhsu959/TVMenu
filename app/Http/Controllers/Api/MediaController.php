@@ -22,12 +22,13 @@ class MediaController extends Controller
 	 * @params: request
 	 * @return: json
 	 */
-	public function list(Request $request)
+	public function list(Request $request, $mediaType = NULL)
 	{
 		if ($request->ajax())
 		{
 			$formData = new Fluent();
-			$formData->enabled = FALSE;
+			$formData->mediaType = intval($mediaType);
+			$formData->enabled = NULL;
 			
 			$response = $this->_service->list($formData);
 			
@@ -41,11 +42,12 @@ class MediaController extends Controller
 	 * @params: request
 	 * @return: json
 	 */
-	public function activeList(Request $request)
+	public function activeList(Request $request, $mediaType = NULL)
 	{
 		if ($request->ajax())
 		{
 			$formData = new Fluent();
+			$formData->mediaType = intval($mediaType);
 			$formData->enabled = TRUE;
 			
 			$response = $this->_service->list($formData);

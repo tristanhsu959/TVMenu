@@ -18,13 +18,16 @@ class MediaRepository extends Repository
 	 * @params: fluent
 	 * @return: array
 	 */
-	public function getList($enabled = FALSE)
+	public function getList($mediaType, $enabled)
 	{
 		$db = $this->connectTvMenu();
 		
 		$result = $db
 			->table('Medias')
 			->select('id', 'name', 'startDate', 'endDate', 'path', 'type', 'enabled')
+			->when(! empty($mediaType), function ($query) use ($mediaType) {
+				$query->where('type', $mediaType);
+			})
 			->when($enabled, function ($query) use ($enabled) {
 				$query->where('enabled', $enabled);
 			})

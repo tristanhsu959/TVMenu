@@ -11,10 +11,9 @@ document.addEventListener('alpine:init', () => {
 			type: 1,
 			enabled: true
 		},
-		mediaType: null,
+		mediaType: '',
 		
 		init() {
-			
 		},
 		
 		handleFileChange(event) {
@@ -24,14 +23,13 @@ document.addEventListener('alpine:init', () => {
                 this.formData.uploadFile = files[0]; 
 		},
 		async listMedia() {
-			const type = (this.mediaType == null) ? '' : `/${this.mediaType}`;
+			const type = (this.mediaType == '') ? '' : `/${this.mediaType}`;
             const response = await axios.get(`/api/tvMenu/medias${type}`);
 		},
 		
 		async listActiveMedia() {
-			/* const formData = new FormData(); */
-            
-            const response = await axios.get('/api/tvMenu/medias/active');
+			const type = (this.mediaType == '') ? '' : `/${this.mediaType}`;
+            const response = await axios.get(`/api/tvMenu/medias/active${type}`);
 		},
 		
 		async createMedia() {
@@ -138,8 +136,6 @@ document.addEventListener('alpine:init', () => {
 		
 		async editMenu() {
 			const response = await axios.get(`/api/tvMenu/menus/${this.id}`);
-			
-			console.log(response);
 		},
 		
 		async updateMenu() {
@@ -163,7 +159,7 @@ document.addEventListener('alpine:init', () => {
 	
 	Alpine.data('storeMenuForm', () => ({
 		id: 0,
-		brand: null,
+		brand: '',
 		mockPayload: '',
 		
 		init() {
@@ -171,7 +167,7 @@ document.addEventListener('alpine:init', () => {
 		},
 		
 		async listStore() {
-			const brandCode = (this.brand == null) ? '' : `/${this.brand}`;
+			const brandCode = (this.brand == '') ? '' : `/${this.brand}`;
 			const response = await axios.get(`/api/tvMenu/storeMenus${brandCode}`);
 		},
 		
@@ -243,8 +239,8 @@ document.addEventListener('alpine:init', () => {
 		},
 		
 		get buildUrl(){
-			let id = (this.id == '') ? 'storeId' : this.id;
-			let tvId = (this.tvId == '') ? 'tvId' : this.tvId;
+			let id = (this.id == '') ? '{storeId}' : this.id;
+			let tvId = (this.tvId == '') ? '{tvId}' : this.tvId;
 			
 			return `${this.baseUrl}/${id}/${tvId}`;
 		},
