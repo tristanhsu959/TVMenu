@@ -101,7 +101,7 @@ class StoreMenuService
 	
 	/* ====================== Get menus ====================== */
 	/* Get menu by id
-	 * @params: int
+	 * @params: string
 	 * @return: array
 	 */
 	public function getMenus($storeId)
@@ -114,7 +114,7 @@ class StoreMenuService
 			$store = StoreManager::getById($storeId);
 			
 			#2.get menus & detail
-			$store['menus'] = $this->_repository->getById($storeId);
+			$store['menus'] = $this->_getMenuByStore($storeId);
 			
 			#3.Return response
 			$response = ResponseLib::initialize($store)->success()->get();
@@ -134,6 +134,24 @@ class StoreMenuService
 			
 			return $response;
 		}
+	}
+	
+	/* Get menu setting by store id
+	 * @params: string
+	 * @return: array
+	 */
+	private function _getMenuByStore($storeId)
+	{
+		$menus = $this->_repository->getById($storeId);
+			
+		$menus = collect($menus)->map(function($item, $key){
+			$item['tvId'] 	= intval($item['tvId']);
+			$item['menuId'] = intval($item['menuId']);
+			
+			return $item;
+		})->toArray();
+		
+		return $menus;
 	}
 	
 	/* Insert or Update store menu

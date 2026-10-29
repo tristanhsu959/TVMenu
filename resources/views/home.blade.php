@@ -188,6 +188,10 @@
 					<input type="text" x-model="id">
 					<label>ID</label>
 				</div>
+				<div class="field label border small">
+					<input type="text" x-model="brand">
+					<label>Brand</label>
+				</div>
 				<div class="field label border fill small max">
 					<textarea x-model="mockPayload"></textarea>
 					<label class="red-text">Paste JSON here</label>
@@ -205,6 +209,7 @@
     "data": [
         {
             "id": 4,
+            "brand": "[8WAY|BUYGOOD]",
             "menuName": "八方Menu-1",
             "isDefault": false
         },...

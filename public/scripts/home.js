@@ -90,6 +90,7 @@ document.addEventListener('alpine:init', () => {
 
 	Alpine.data('menuForm', () => ({
 		id: 0,
+		brand: '',
 		mockPayload: '',
 		
 		init() {
@@ -97,7 +98,8 @@ document.addEventListener('alpine:init', () => {
 		},
 		
 		async listMenu() {
-			const response = await axios.get('/api/tvMenu/menus');
+			const brandCode = (this.brand == '') ? '' : `/${this.brand}`;
+			const response = await axios.get(`/api/tvMenu/menus${brandCode}`);
 		},
 		
 		async createMenu() {

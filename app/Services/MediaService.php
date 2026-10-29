@@ -306,7 +306,7 @@ class MediaService
 		
 		$data['stDate'] 	= $stDate;
 		$data['endDate'] 	= $endDate;
-		$data['type'] 		= $type;
+		$data['type'] 		= intval($type);
 		$data['typeName'] 	= MediaType::tryFrom($type)->label();
 		$data['enabled'] 	= boolval($enabled);
 		

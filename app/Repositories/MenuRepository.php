@@ -15,17 +15,19 @@ class MenuRepository extends Repository
 	}
 	
 	/* Reset all menu default value
-	 * @params: fluent
+	 * @params: string
 	 * @return: boolean
 	 */
-	public function resetDefault()
+	public function resetDefault($brand)
 	{
 		try
 		{
 			$data['isDefault'] = FALSE;
 			
 			$db = $this->connectTvMenu();
-			$db->table('Menus')->update($data);
+			$db->table('Menus')
+				->where('brand', $brand)
+				->update($data);
 		
 			return TRUE;
 		}
@@ -39,16 +41,16 @@ class MenuRepository extends Repository
 	 * @params: fluent
 	 * @return: array
 	 */
-	public function getList($request = NULL)
+	public function getList($brand = NULL)
 	{
 		$db = $this->connectTvMenu();
 		
 		$result = $db
 			->table('Menus')
-			->select('id', 'menuName', 'isDefault')
-			/* ->when(empty($request), function ($query) use ($excepts) {
-					$query->whereNotIn('o.posid', $excepts);
-			}) */
+			->select('id', 'brand', 'menuName', 'isDefault')
+			->when(! empty($brand), function ($query) use ($brand) {
+					$query->where('brand', $brand);
+			})
 			->get()
 			->toArray();
 		
@@ -66,7 +68,7 @@ class MenuRepository extends Repository
 		
 		try 
 		{
-			$insertId = $this->_insertMenu($db, $request->menuName, $request->isDefault);
+			$insertId = $this->_insertMenu($db, $request->brand, $request->menuName, $request->isDefault);
 			
 			$this->_insertDetail($db, $insertId, $request->medias);
 			
@@ -87,8 +89,9 @@ class MenuRepository extends Repository
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function _insertMenu($db, $menuName, $isDefault)
+	public function _insertMenu($db, $brand, $menuName, $isDefault)
 	{
+		$data['brand']		= $brand;
 		$data['menuName']	= $menuName;
 		$data['isDefault'] 	= boolval($isDefault);
 			
@@ -152,7 +155,7 @@ class MenuRepository extends Repository
 		
 		try 
 		{
-			$this->_updateMenu($db, $request->id, $request->menuName, $request->isDefault);
+			$this->_updateMenu($db, $request->id, $request->brand, $request->menuName, $request->isDefault);
 			
 			$this->_removeDetailByMenuId($db, $request->id);
 			
@@ -175,8 +178,9 @@ class MenuRepository extends Repository
 	 * @params: fluent
 	 * @return: boolean
 	 */
-	public function _updateMenu($db, $id, $menuName, $isDefault)
+	public function _updateMenu($db, $id, $brand, $menuName, $isDefault)
 	{
+		$data['brand']		= $brand;
 		$data['menuName']	= $menuName;
 		$data['isDefault'] 	= $isDefault;
 			

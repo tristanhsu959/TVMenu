@@ -33,9 +33,9 @@ class MenuService
 		try
 		{
 			$this->_log->request = $request->toArray();
-			dd($request);
+			
 			#1.Get list
-			$list = $this->_repository->getList($request);
+			$list = $this->_repository->getList($request->brand);
 			
 			#2.Build response
 			$list = $this->_buildList($list);
@@ -68,7 +68,8 @@ class MenuService
 	{
 		$data = collect($list)->map(function($item, $key){
 			
-			$temp['id'] 		= $item['id'];
+			$temp['id'] 		= intval($item['id']);
+			$temp['brand'] 		= $item['brand'];
 			$temp['menuName'] 	= $item['menuName'];
 			$temp['isDefault'] 	= boolval($item['isDefault']);
 			
@@ -173,7 +174,7 @@ class MenuService
 		] */
 		$menu = collect($menu);
 		
-		$output['id'] 			= $menu->pluck('id')->first();
+		$output['id'] 			= intval($menu->pluck('id')->first());
 		$output['menuName'] 	= $menu->pluck('menuName')->first();
 		$output['isDefault'] 	= boolval($menu->pluck('isDefault')->first());
 		
@@ -201,10 +202,13 @@ class MenuService
 		{
 			$this->_log->request = $request->toArray();
 			
-			#1.get menu & detail
+			#1.Reset default setting
+			$this->_resetDefault($request);
+			
+			#2.Update
 			$this->_repository->update($request);
 			
-			#2.Return response
+			#3.Return response
 			$response = ResponseLib::initialize()->success()->get();
 			
 			$this->_log->response = $response;
@@ -270,7 +274,7 @@ class MenuService
 	{
 		#有設定Default時
 		if ($request->isDefault == True)
-			$this->_repository->resetDefault();
+			$this->_repository->resetDefault($request->brand);
 		
 		return TRUE;
 	}

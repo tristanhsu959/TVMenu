@@ -27,7 +27,7 @@ class MenuController extends Controller
 		if ($request->ajax())
 		{
 			$formData = new Fluent();
-			$formData->brand($brand);
+			$formData->brand(Str::upper($brand));
 			$response = $this->_service->list($formData);
 			
 			return response()->json($response);
@@ -44,6 +44,7 @@ class MenuController extends Controller
 	{
 		if ($request->ajax())
 		{
+			$brand		= $request->input('brand');
 			$menuName	= $request->input('menuName');
 			$isDefault	= $request->boolean('isDefault', FALSE);
 			$medias		= $request->array('medias');
@@ -60,7 +61,7 @@ class MenuController extends Controller
 			}
 			
 			$formData = new Fluent([]);
-			$formData->menuName($menuName)->isDefault($isDefault)->medias($medias);
+			$formData->brand(Str::upper($brand))->menuName($menuName)->isDefault($isDefault)->medias($medias);
 						
 			#clone避免交叉影響
 			$response = $this->_service->create(clone $formData);
@@ -109,6 +110,7 @@ class MenuController extends Controller
 				return response()->json($response);
 			}
 			
+			$brand		= $request->input('brand');
 			$menuName	= $request->input('menuName');
 			$isDefault	= $request->boolean('isDefault', FALSE);
 			$medias		= $request->array('medias');
@@ -125,7 +127,7 @@ class MenuController extends Controller
 			}
 			
 			$formData = new Fluent([]);
-			$formData->id(intval($id))->menuName($menuName)->isDefault($isDefault)->medias($medias);
+			$formData->id(intval($id))->brand(Str::upper($brand))->menuName($menuName)->isDefault($isDefault)->medias($medias);
 						
 			#clone避免交叉影響
 			$response = $this->_service->update(clone $formData);
